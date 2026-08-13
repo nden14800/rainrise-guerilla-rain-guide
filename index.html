@@ -10,6 +10,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/manus-storage/guerilla-rain-hero_ede33e91.jpg" />
     <link rel="icon" type="image/png" href="/manus-storage/rainrise-mark_e0630605.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <title>なぜ最近、ゲリラ豪雨が多いのか | rainrise</title>
     <style>
       /*
@@ -55,6 +56,7 @@
       a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
       img { display: block; max-width: 100%; }
       button { font: inherit; }
+      .bi { display: inline-block; font-style: normal; line-height: 1; vertical-align: -.125em; }
       .skip-link {
         position: fixed; z-index: 100; left: 1rem; top: -5rem; padding: .5rem .8rem;
         color: var(--cloud); background: var(--ink); transition: top .18s var(--eased);
@@ -67,6 +69,7 @@
       .brand img { width: 38px; height: 38px; object-fit: contain; }
       .nav-links { display: flex; align-items: center; gap: 1.7rem; }
       .nav-links a { color: var(--ink-soft); font-family: var(--mono); font-size: .68rem; letter-spacing: .09em; text-decoration: none; transition: color .16s var(--eased); }
+      .nav-links a .bi { margin-right: .32rem; font-size: .92rem; }
       .nav-links a:hover, .nav-links a:focus-visible { color: var(--rain-deep); }
       .nav-cta { padding: .5rem .8rem; border: 1px solid var(--ink); color: var(--ink) !important; }
       .nav-toggle { display: none; border: 0; background: none; color: var(--ink); cursor: pointer; }
@@ -188,8 +191,31 @@
       .action-number { color: #a3def7; font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; }
       .action-card h3 { max-width: 250px; margin: 1.2rem 0 1rem; font-family: var(--display); font-size: 1.72rem; letter-spacing: -.055em; line-height: 1.38; }
       .action-card p { max-width: 290px; margin: 0; color: #c8d7dc; font-size: .9rem; line-height: 1.88; }
-      .action-link { display: inline-flex; align-items: center; gap: .7rem; margin-top: 1.5rem; color: #a3def7; font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .04em; }
-      .action-link::after { content: '↗'; font-size: 1rem; }
+      .action-link { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.5rem; color: #a3def7; font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .04em; }
+      .action-link .bi { font-size: .95rem; }
+
+      .hazard { overflow: hidden; background: #e7f3f5; }
+      .hazard::before { background: linear-gradient(180deg, transparent, rgba(54,127,165,.58) 12%, rgba(54,127,165,.58) 88%, transparent); }
+      .hazard .section-inner::before { color: rgba(29,85,123,.78); }
+      .hazard-grid { display: grid; grid-template-columns: .88fr 1.12fr; gap: 3.3rem; margin-top: 3.8rem; }
+      .hazard-intro { position: relative; min-height: 340px; padding: 2.25rem 2.4rem; overflow: hidden; background: var(--ink); color: var(--cloud); }
+      .hazard-intro::before { position: absolute; right: -1.2rem; bottom: -3.9rem; color: rgba(163,222,247,.16); content: '\F3E8'; font-family: 'bootstrap-icons'; font-size: 15rem; transform: rotate(-10deg); }
+      .hazard-icon { color: #a3def7; font-size: 2.2rem; }
+      .hazard-intro h3 { position: relative; max-width: 320px; margin: 1.15rem 0 .75rem; font-family: var(--display); font-size: 1.75rem; letter-spacing: -.05em; line-height: 1.4; }
+      .hazard-intro p { position: relative; max-width: 390px; margin-bottom: 1.5rem; color: #cce0e6; font-size: .88rem; line-height: 1.85; }
+      .hazard-portal { position: relative; display: inline-flex; align-items: center; gap: .55rem; padding-bottom: .15rem; border-bottom: 1px solid #a3def7; color: #a3def7; font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .03em; text-decoration: none; }
+      .hazard-portal .bi { font-size: .96rem; }
+      .hazard-picker { padding: 2.25rem 2.4rem; border: 1px solid #b9d1d8; background: rgba(255,255,255,.82); }
+      .hazard-picker label { display: block; margin-bottom: .65rem; color: var(--rain-deep); font-family: var(--mono); font-size: .69rem; font-weight: 600; letter-spacing: .08em; }
+      .hazard-picker label .bi { margin-right: .4rem; font-size: 1rem; }
+      .hazard-picker select { width: 100%; min-height: 52px; padding: .7rem .9rem; border: 1px solid #aabfc5; border-radius: 0; background: var(--cloud); color: var(--ink); font: 500 1rem var(--sans); }
+      .hazard-picker select:focus-visible, .hazard-open:focus-visible { outline: 3px solid rgba(54,127,165,.45); outline-offset: 3px; }
+      .hazard-open { display: flex; align-items: center; justify-content: space-between; gap: .8rem; width: 100%; margin-top: 1.1rem; padding: 1rem 1.1rem; background: #28789d; color: #fff; font-family: var(--sans); font-size: .92rem; font-weight: 700; line-height: 1.4; text-decoration: none; transition: background .16s var(--eased), transform .16s var(--eased); }
+      .hazard-open:hover { background: #155a7d; transform: translateY(-2px); }
+      .hazard-open .bi { color: #d5f1fa; font-size: 1.05rem; }
+      .hazard-open.is-disabled { background: #9eafb3; cursor: not-allowed; opacity: .82; pointer-events: none; }
+      .hazard-status { min-height: 1.9em; margin: 1rem 0 0; color: var(--ink-soft); font-size: .78rem; line-height: 1.7; }
+      .hazard-note { margin: 1.5rem 0 0; color: var(--ink-soft); font-size: .78rem; line-height: 1.85; }
 
       .sources { padding: 6rem 0 2rem; background: var(--paper); }
       .sources-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: 4rem; padding-bottom: 3rem; border-bottom: 1px solid var(--line); }
@@ -209,7 +235,7 @@
         .site-header { height: 68px; } .nav-inner { width: min(100% - 32px, 1280px); }
         .nav-toggle { display: block; padding: .5rem; } .nav-links { position: absolute; top: 68px; right: 0; left: 0; display: none; flex-direction: column; align-items: stretch; gap: 0; padding: .7rem 1rem 1rem; border-bottom: 1px solid var(--line); background: var(--paper); } .nav-links.open { display: flex; } .nav-links a { padding: .75rem .25rem; } .nav-cta { padding: .75rem .6rem !important; text-align: center; }
         .hero { min-height: 700px; } .hero::before { background: linear-gradient(90deg, rgba(244,245,242,.99) 0%, rgba(244,245,242,.95) 60%, rgba(244,245,242,.55) 100%), linear-gradient(180deg, #d0e7ed 0%, #e6f0f0 62%, #becfc0 62%, #aac19f 100%); } .hero-grid { display: block; width: min(100% - 32px, 1280px); } .hero-copy { min-height: 650px; padding: 5.5rem 0 4rem 1.3rem; } .hero-aside { display: none; } .hero-diagram { inset: 0 -45% 0 16%; opacity: .72; } .section::before, .section-inner::before { display: none; }
-        .section { padding: 5.4rem 0; } .section-inner { width: min(100% - 32px, 1120px); } .alt-statement, .process-intro, .compare-layout, .watch-layout, .action-head, .sources-grid { grid-template-columns: 1fr; gap: 2.2rem; } .compare-aside { position: static; }
+        .section { padding: 5.4rem 0; } .section-inner { width: min(100% - 32px, 1120px); } .alt-statement, .process-intro, .compare-layout, .watch-layout, .action-head, .sources-grid, .hazard-grid { grid-template-columns: 1fr; gap: 2.2rem; } .compare-aside { position: static; }
         .metrics, .action-grid { grid-template-columns: 1fr; } .metric, .metric + .metric, .action-card, .action-card + .action-card { min-height: 0; padding: 1.8rem 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.3); } .metric:last-child, .action-card:last-child { border-bottom: 0; }
         .process-figure { min-height: 730px; } .process-notes { grid-template-columns: 1fr; align-content: end; } .process-note { min-height: 0; padding: 1rem 1.2rem; } .process-note span { font-size: .78rem; }
         .image-pair { grid-template-columns: 1fr; } .image-card { min-height: 300px; } .hero-meta { flex-wrap: wrap; gap: .7rem 1.1rem; }
@@ -230,7 +256,8 @@
           <a href="#why">なぜ増えた？</a>
           <a href="#mechanism">しくみ</a>
           <a href="#prepare">備える</a>
-          <a class="nav-cta" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer">キキクルを確認 ↗</a>
+          <a href="#hazard"><i class="bi bi-geo-alt" aria-hidden="true"></i>地域の地図</a>
+          <a class="nav-cta" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer"><i class="bi bi-cloud-rain-heavy-fill" aria-hidden="true"></i>キキクルを確認</a>
         </nav>
       </div>
     </header>
@@ -375,10 +402,23 @@
             <p class="section-intro reveal">大雨は局地性が強く、状況が急に変わります。日頃から自宅や職場の周辺のリスクを知り、情報と現在地を結びつけて判断することが大切です。</p>
           </div>
           <div class="action-grid reveal">
-            <article class="action-card"><span class="action-number">01 / BEFORE</span><h3>出かける前に、<br />雨雲とリスクを。</h3><p>予報だけでなく、雨雲の動きや警報・注意報を確認。大雨の可能性がある日は、行程に余裕を持たせます。</p><a class="action-link" href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer">雨雲の動きを見る</a></article>
-            <article class="action-card"><span class="action-number">02 / DURING</span><h3>積乱雲のサインで、<br />早めに屋内へ。</h3><p>空が暗くなる、雷鳴が聞こえる、冷たい風が吹く。そんな変化を感じたら、安全な建物の中へ移動します。</p><a class="action-link" href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer">気象庁の注意点を読む</a></article>
-            <article class="action-card"><span class="action-number">03 / RISK</span><h3>危険な場所では、<br />自分で避難を判断。</h3><p>キキクルや河川の水位情報も使い、避難指示が出ていなくても、危険な場所から離れる判断をします。</p><a class="action-link" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer">キキクルを開く</a></article>
+            <article class="action-card"><span class="action-number">01 / BEFORE</span><h3>出かける前に、<br />雨雲とリスクを。</h3><p>予報だけでなく、雨雲の動きや警報・注意報を確認。大雨の可能性がある日は、行程に余裕を持たせます。</p><a class="action-link" href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer"><i class="bi bi-cloud-rain-heavy" aria-hidden="true"></i>雨雲の動きを見る <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article>
+            <article class="action-card"><span class="action-number">02 / DURING</span><h3>積乱雲のサインで、<br />早めに屋内へ。</h3><p>空が暗くなる、雷鳴が聞こえる、冷たい風が吹く。そんな変化を感じたら、安全な建物の中へ移動します。</p><a class="action-link" href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>気象庁の注意点を読む <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article>
+            <article class="action-card"><span class="action-number">03 / RISK</span><h3>危険な場所では、<br />自分で避難を判断。</h3><p>キキクルや河川の水位情報も使い、避難指示が出ていなくても、危険な場所から離れる判断をします。</p><a class="action-link" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer"><i class="bi bi-shield-check" aria-hidden="true"></i>キキクルを開く <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article>
           </div>
+        </div>
+      </section>
+
+      <section id="hazard" class="section hazard" aria-labelledby="hazard-title">
+        <div class="section-inner">
+          <div class="section-label reveal">LOCAL RISK / 06</div>
+          <h2 id="hazard-title" class="reveal">住んでいる地域の<br /><span class="amber">水害・土砂災害</span>リスクを、<br />地図で確かめる。</h2>
+          <p class="section-intro reveal">大雨への備えは、雨が降る前に「自宅・職場・よく通る道」の周辺にどのようなリスクがあるかを知るところから始まります。都道府県を選ぶと、選択した地域を中心に国の重ねるハザードマップを開きます。</p>
+          <div class="hazard-grid reveal">
+            <div class="hazard-intro"><i class="bi bi-map-fill hazard-icon" aria-hidden="true"></i><h3>自治体の公式マップを、まとめて探す。</h3><p>「わがまちハザードマップ」では、地域や災害種別から各市町村が公開する公式ハザードマップへのリンクを確認できます。</p><a class="hazard-portal" href="https://disaportal.gsi.go.jp/hazardmap/" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>わがまちハザードマップを開く</a></div>
+            <div class="hazard-picker"><label for="prefecture-map"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>都道府県を選択</label><select id="prefecture-map" name="prefecture-map"><option value="">都道府県を選んでください</option><option value="43.0621,141.3544">北海道</option><option value="40.8222,140.7474">青森県</option><option value="39.7036,141.1527">岩手県</option><option value="38.2682,140.8694">宮城県</option><option value="39.7186,140.1024">秋田県</option><option value="38.2404,140.3633">山形県</option><option value="37.7608,140.4747">福島県</option><option value="36.3659,140.4712">茨城県</option><option value="36.5658,139.8836">栃木県</option><option value="36.3911,139.0608">群馬県</option><option value="35.8569,139.6489">埼玉県</option><option value="35.6073,140.1063">千葉県</option><option value="35.6762,139.6503">東京都</option><option value="35.4478,139.6425">神奈川県</option><option value="37.9026,139.0236">新潟県</option><option value="36.6953,137.2113">富山県</option><option value="36.5613,136.6562">石川県</option><option value="36.0652,136.2216">福井県</option><option value="35.6639,138.5684">山梨県</option><option value="36.6486,138.1948">長野県</option><option value="35.3912,136.7223">岐阜県</option><option value="34.9769,138.3831">静岡県</option><option value="35.1815,136.9066">愛知県</option><option value="34.7303,136.5086">三重県</option><option value="35.0045,135.8686">滋賀県</option><option value="35.0116,135.7681">京都府</option><option value="34.6937,135.5023">大阪府</option><option value="34.6901,135.1955">兵庫県</option><option value="34.6851,135.8050">奈良県</option><option value="34.2260,135.1675">和歌山県</option><option value="35.5011,134.2351">鳥取県</option><option value="35.4723,133.0505">島根県</option><option value="34.6618,133.9350">岡山県</option><option value="34.3853,132.4553">広島県</option><option value="34.1859,131.4714">山口県</option><option value="34.0658,134.5593">徳島県</option><option value="34.3401,134.0434">香川県</option><option value="33.8417,132.7661">愛媛県</option><option value="33.5597,133.5311">高知県</option><option value="33.5904,130.4017">福岡県</option><option value="33.2494,130.2988">佐賀県</option><option value="32.7503,129.8777">長崎県</option><option value="32.8031,130.7079">熊本県</option><option value="33.2382,131.6126">大分県</option><option value="31.9111,131.4239">宮崎県</option><option value="31.5602,130.5581">鹿児島県</option><option value="26.2124,127.6809">沖縄県</option></select><a id="hazard-open" class="hazard-open is-disabled" href="https://disaportal.gsi.go.jp/maps/" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1"><i class="bi bi-map" aria-hidden="true"></i><span id="hazard-open-label">地域を選択してください</span><i class="bi bi-arrow-up-right" aria-hidden="true"></i></a><p id="hazard-status" class="hazard-status" aria-live="polite">選択後、洪水・土砂災害の情報を重ねた地図を新しいタブで開きます。</p></div>
+          </div>
+          <p class="hazard-note reveal"><i class="bi bi-info-circle" aria-hidden="true"></i> 表示される地図は地域の中心付近から始まります。住所検索で自宅や通勤・通学経路を確認し、避難場所・避難経路は必ずお住まいの市区町村の公式情報でも確認してください。<a class="cite" href="#source-5" aria-label="出典5">[5]</a></p>
         </div>
       </section>
 
@@ -392,8 +432,9 @@
                 <li id="source-2"><a href="https://www.data.jma.go.jp/cpdinfo/ccj/2025/html_honpen/cc2025_honpen_5.html" target="_blank" rel="noopener noreferrer">気象庁「日本の気候変動2025 — 第5章 降水」</a>。極端な大雨の観測傾向、数値、水蒸気量との関係を参照。</li>
                 <li id="source-3"><a href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer">気象庁「急な大雨や雷・竜巻から身を守るために」</a>。積乱雲に伴う現象と行動の説明を参照。</li>
                 <li id="source-4"><a href="https://www.jma.go.jp/jma/kishou/know/bosai/alertlevel.html" target="_blank" rel="noopener noreferrer">気象庁「防災気象情報と警戒レベルとの対応について」</a>。キキクルと避難行動の説明を参照。</li>
+                <li id="source-5"><a href="https://disaportal.gsi.go.jp/" target="_blank" rel="noopener noreferrer">国土交通省・国土地理院「ハザードマップポータルサイト」</a>。重ねるハザードマップと、わがまちハザードマップへの導線を参照。</li>
               </ol>
-              <p class="copyright-note">掲載の模式図（FIG. 01）、ブランドマーク、装飾SVG、ヒーローおよび本文の画像は、このサイトのために制作したオリジナル素材です。気象庁等の図表・写真・地図の転載は行っていません。外部リンク先の著作権は各権利者に帰属します。</p>
+              <p class="copyright-note">掲載の模式図（FIG. 01）、ブランドマーク、装飾SVG、ヒーローおよび本文の画像は、このサイトのために制作したオリジナル素材です。気象庁等の図表・写真・地図の転載は行っていません。UIアイコンは<a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener noreferrer">Bootstrap Icons v1.13.1</a>（MIT License）を使用しています。外部リンク先の著作権は各権利者に帰属します。</p>
             </div>
           </div>
         </div>
@@ -426,6 +467,31 @@
           if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
         }), { threshold: .12 });
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+        const prefectureSelect = document.querySelector('#prefecture-map');
+        const hazardOpen = document.querySelector('#hazard-open');
+        const hazardOpenLabel = document.querySelector('#hazard-open-label');
+        const hazardStatus = document.querySelector('#hazard-status');
+        const updateHazardMap = () => {
+          const selectedOption = prefectureSelect?.options[prefectureSelect.selectedIndex];
+          const coordinates = selectedOption?.value;
+          if (!coordinates) {
+            hazardOpen?.classList.add('is-disabled');
+            hazardOpen?.setAttribute('aria-disabled', 'true');
+            hazardOpen?.setAttribute('tabindex', '-1');
+            if (hazardOpenLabel) hazardOpenLabel.textContent = '地域を選択してください';
+            if (hazardStatus) hazardStatus.textContent = '選択後、洪水・土砂災害の情報を重ねた地図を新しいタブで開きます。';
+            return;
+          }
+          const [latitude, longitude] = coordinates.split(',');
+          const parameters = new URLSearchParams({ base: 'std', ll: `${latitude},${longitude}`, z: '10', ls: 'flood_list,0.8|landslide,0.8', disp: '111' });
+          hazardOpen.href = `https://disaportal.gsi.go.jp/maps/index.html?${parameters.toString()}`;
+          hazardOpen.classList.remove('is-disabled');
+          hazardOpen.setAttribute('aria-disabled', 'false');
+          hazardOpen.setAttribute('tabindex', '0');
+          if (hazardOpenLabel) hazardOpenLabel.textContent = `${selectedOption.text}の地図を開く`;
+          if (hazardStatus) hazardStatus.textContent = `${selectedOption.text}の中心付近に、洪水・土砂災害情報を重ねた地図を開きます。`;
+        };
+        prefectureSelect?.addEventListener('change', updateHazardMap);
       })();
     </script>
   </body>
