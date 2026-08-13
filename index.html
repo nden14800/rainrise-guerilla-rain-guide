@@ -4,494 +4,377 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#102b42" />
-    <meta name="description" content="最近「ゲリラ豪雨」が多いと感じる理由を、気象庁の公的データと自作図解で読み解く気象ガイド。" />
-    <meta property="og:title" content="なぜ最近、ゲリラ豪雨が多いのか" />
-    <meta property="og:description" content="空気中の水蒸気、積乱雲、極端な大雨の増加を、約5分で理解する。" />
+    <meta name="description" content="最近の局地的大雨と極端な大雨の変化を、気象庁の一次資料・グラフ・自作図解で読み解く雨の断面図ガイド。" />
+    <meta property="og:title" content="なぜ最近、ゲリラ豪雨が多いのか | rainrise" />
+    <meta property="og:description" content="強い雨の増加、積乱雲の仕組み、地域で確認することを、データと図解で読む。" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/manus-storage/guerilla-rain-hero_ede33e91.jpg" />
+    <meta property="og:image" content="/manus-storage/rainrise-observation-platform_5bc1394b.jpg" />
     <link rel="icon" type="image/png" href="/manus-storage/rainrise-mark_e0630605.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <title>なぜ最近、ゲリラ豪雨が多いのか | rainrise</title>
     <style>
-      /*
-       * DESIGN REMINDER — 「雨の断面図」
-       * Editorial infographic: storm-navy / paper-grey / updraft-amber.
-       * Let the vertical atmosphere reading guide the eye; use height lines, quiet whitespace,
-       * precise data and original diagrams. Do not turn this into a generic rounded-card grid.
-       */
-      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap');
+      /* DESIGN REMINDER — 「雨の断面図」 / long-form Rain Path Tracker
+         The page is a continuous vertical atmosphere: data in amber, safety in signal blue,
+         figures readable at first glance, no generic rounded-card layout. */
+      :root { --ink:#102b42; --ink-2:#23485c; --muted:#536c79; --paper:#f4f5f2; --paper-2:#e8eeeb; --cloud:#fff; --mist:#dce8e7; --sky:#a9d1de; --rain:#367fa5; --rain-dark:#174f74; --amber:#f3a84b; --amber-pale:#fff0d9; --signal:#167fa7; --signal-pale:#e3f2f5; --line:#c8d5d3; --mono:'IBM Plex Mono',monospace; --sans:'Noto Sans JP',sans-serif; --display:'Zen Kaku Gothic New','Noto Sans JP',sans-serif; --ease:cubic-bezier(.23,1,.32,1); }
+      * { box-sizing:border-box; }
+      html { scroll-behavior:smooth; }
+      body { margin:0; overflow-x:hidden; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.9; text-rendering:optimizeLegibility; }
+      ::selection { background:var(--amber); color:var(--ink); }
+      a { color:inherit; text-underline-offset:.22em; text-decoration-thickness:1px; }
+      img { display:block; max-width:100%; }
+      button, select { font:inherit; }
+      .bi { display:inline-block; font-style:normal; line-height:1; vertical-align:-.125em; }
+      .skip-link { position:fixed; z-index:120; left:1rem; top:-4rem; padding:.55rem .8rem; background:var(--ink); color:#fff; transition:top .18s var(--ease); }
+      .skip-link:focus { top:1rem; }
+      .site-header { position:sticky; top:0; z-index:90; height:78px; border-bottom:1px solid rgba(16,43,66,.12); background:rgba(244,245,242,.94); backdrop-filter:blur(16px); }
+      .nav-inner { display:flex; align-items:center; justify-content:space-between; width:min(1280px,calc(100% - 48px)); height:100%; margin:auto; }
+      .brand { display:inline-flex; align-items:center; gap:.72rem; color:var(--ink); font:600 .8rem/1 var(--mono); letter-spacing:.1em; text-decoration:none; }
+      .brand img { width:43px; height:43px; object-fit:contain; }
+      .nav-links { display:flex; align-items:center; gap:1.45rem; }
+      .nav-links a { color:var(--muted); font:500 .66rem/1 var(--mono); letter-spacing:.08em; text-decoration:none; transition:color .16s var(--ease); }
+      .nav-links a:hover, .nav-links a:focus-visible { color:var(--rain-dark); }
+      .nav-links .bi { margin-right:.25rem; font-size:.9rem; }
+      .nav-cta { padding:.55rem .75rem; border:1px solid var(--ink); color:var(--ink)!important; }
+      .nav-toggle { display:none; border:0; background:transparent; color:var(--ink); cursor:pointer; }
 
-      :root {
-        --ink: #102b42;
-        --ink-soft: #4f6473;
-        --paper: #f4f5f2;
-        --paper-deep: #e7ece9;
-        --cloud: #ffffff;
-        --line: #cfd9d8;
-        --mist: #dce8e7;
-        --sky: #76b4cf;
-        --rain: #367fa5;
-        --rain-deep: #1d557b;
-        --amber: #f3a84b;
-        --amber-pale: #fff0d9;
-        --signal: #e6554d;
-        --mono: 'IBM Plex Mono', monospace;
-        --sans: 'Noto Sans JP', system-ui, sans-serif;
-        --display: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
-        --eased: cubic-bezier(.23, 1, .32, 1);
-      }
+      .hero { position:relative; min-height:min(790px,calc(100vh - 78px)); overflow:hidden; isolation:isolate; background:#dce7e7; }
+      .hero::before { position:absolute; z-index:-2; inset:0; background:linear-gradient(180deg,#d9eef1 0%,#f4f5f2 72%,#c7d8bd 72%,#9ab18d 100%); content:''; }
+      .hero::after { position:absolute; z-index:-1; inset:0; opacity:.3; background-image:linear-gradient(rgba(16,43,66,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(16,43,66,.12) 1px,transparent 1px); background-size:calc(100% / 6) 112px; mask-image:linear-gradient(to right,#000 0%,#000 58%,transparent 96%); content:''; }
+      .hero-atmosphere { position:absolute; z-index:0; inset:0; pointer-events:none; }
+      .hero-atmosphere svg { width:100%; height:100%; }
+      .hero-inner { position:relative; z-index:1; display:grid; grid-template-columns:1fr .87fr; align-items:end; width:min(1280px,calc(100% - 48px)); min-height:inherit; margin:auto; }
+      .hero-copy { align-self:center; max-width:780px; padding:8rem 2rem 5rem 6.2rem; border-left:1px solid rgba(16,43,66,.25); }
+      .eyebrow { display:flex; align-items:center; gap:.7rem; margin:0 0 1.45rem; color:var(--rain-dark); font:500 .7rem/1.4 var(--mono); letter-spacing:.12em; }
+      .eyebrow::before { width:2.2rem; height:1px; background:currentColor; content:''; }
+      h1,h2,h3,p { margin-top:0; }
+      h1 { max-width:720px; margin-bottom:1.5rem; font-family:var(--display); font-size:clamp(3.15rem,6.3vw,6.7rem); font-weight:900; letter-spacing:-.085em; line-height:1.1; }
+      h1 em { position:relative; z-index:0; font-style:normal; white-space:nowrap; }
+      h1 em::after { position:absolute; z-index:-1; right:-.03em; bottom:.12em; left:-.05em; height:.23em; background:var(--amber); content:''; transform:skewX(-12deg); }
+      .hero-lead { max-width:575px; margin-bottom:2.25rem; color:#314f5f; font-size:clamp(1rem,1.4vw,1.16rem); font-weight:500; line-height:2; }
+      .read-meta { display:flex; flex-wrap:wrap; gap:.65rem 1.2rem; color:var(--muted); font:500 .65rem/1.7 var(--mono); letter-spacing:.05em; }
+      .read-meta span { display:inline-flex; align-items:center; gap:.42rem; }
+      .read-meta span::before { width:6px; height:6px; border-radius:50%; background:var(--amber); content:''; }
+      .hero-aside { align-self:stretch; position:relative; min-height:540px; border-left:1px solid rgba(255,255,255,.52); }
+      .altitude { position:absolute; top:2rem; right:0; bottom:2rem; left:2.2rem; display:flex; flex-direction:column; justify-content:space-between; color:rgba(255,255,255,.9); font:500 .61rem/1 var(--mono); letter-spacing:.09em; }
+      .altitude div { display:flex; align-items:center; gap:.75rem; }
+      .altitude div::after { width:3.3rem; height:1px; background:currentColor; content:''; }
+      .hero-mark { position:absolute; right:2rem; bottom:2.2rem; width:156px; height:156px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.9); border-radius:50%; background:rgba(16,43,66,.2); color:#fff; font:500 .62rem/1.6 var(--mono); letter-spacing:.08em; text-align:center; backdrop-filter:blur(5px); transform:rotate(9deg); }
+      .hero-mark strong { display:block; color:var(--amber); font-size:1.5rem; }
 
-      * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
-      body {
-        margin: 0;
-        background: var(--paper);
-        color: var(--ink);
-        font-family: var(--sans);
-        font-size: 16px;
-        line-height: 1.9;
-        text-rendering: optimizeLegibility;
-      }
-      ::selection { background: var(--amber); color: var(--ink); }
-      a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
-      img { display: block; max-width: 100%; }
-      button { font: inherit; }
-      .bi { display: inline-block; font-style: normal; line-height: 1; vertical-align: -.125em; }
-      .skip-link {
-        position: fixed; z-index: 100; left: 1rem; top: -5rem; padding: .5rem .8rem;
-        color: var(--cloud); background: var(--ink); transition: top .18s var(--eased);
-      }
-      .skip-link:focus { top: 1rem; }
-      .page-progress { position: fixed; inset: 0 auto auto 0; z-index: 80; width: 0; height: 3px; background: var(--amber); }
-      .site-header { position: sticky; top: 0; z-index: 70; height: 78px; border-bottom: 1px solid rgba(16,43,66,.12); background: rgba(244,245,242,.92); backdrop-filter: blur(12px); }
-      .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; width: min(1280px, calc(100% - 48px)); margin: auto; }
-      .brand { display: inline-flex; align-items: center; gap: .75rem; color: var(--ink); font-family: var(--mono); font-weight: 600; font-size: .84rem; letter-spacing: .08em; text-decoration: none; }
-      .brand img { width: 38px; height: 38px; object-fit: contain; }
-      .nav-links { display: flex; align-items: center; gap: 1.7rem; }
-      .nav-links a { color: var(--ink-soft); font-family: var(--mono); font-size: .68rem; letter-spacing: .09em; text-decoration: none; transition: color .16s var(--eased); }
-      .nav-links a .bi { margin-right: .32rem; font-size: .92rem; }
-      .nav-links a:hover, .nav-links a:focus-visible { color: var(--rain-deep); }
-      .nav-cta { padding: .5rem .8rem; border: 1px solid var(--ink); color: var(--ink) !important; }
-      .nav-toggle { display: none; border: 0; background: none; color: var(--ink); cursor: pointer; }
+      .chapter { position:relative; padding:8rem 0; }
+      .chapter::before { position:absolute; top:-8rem; bottom:-8rem; left:max(24px,calc((100% - 1120px)/2)); width:1px; background:rgba(54,127,165,.36); content:''; }
+      .chapter-inner { position:relative; width:min(1120px,calc(100% - 48px)); margin:auto; }
+      .chapter-inner::before { position:absolute; top:0; left:-2.5rem; color:rgba(23,79,116,.75); content:'↑\A12 KM\A·\A00 KM'; white-space:pre; font:500 .52rem/1.45 var(--mono); letter-spacing:.05em; }
+      .chapter-label { display:flex; align-items:center; gap:.7rem; margin-bottom:1.45rem; color:var(--rain-dark); font:500 .71rem/1 var(--mono); letter-spacing:.12em; }
+      .chapter-label::before { width:24px; height:24px; background:url('/manus-storage/rainrise-mark_e0630605.png') center/contain no-repeat; content:''; }
+      .chapter-label::after { width:76px; height:1px; background:currentColor; content:''; }
+      h2 { max-width:900px; margin-bottom:1.25rem; font-family:var(--display); font-size:clamp(2.2rem,4vw,4.35rem); font-weight:900; letter-spacing:-.07em; line-height:1.25; }
+      h2 .amber { color:var(--amber); }
+      .intro { max-width:735px; margin-bottom:3.4rem; color:var(--muted); font-size:1.05rem; line-height:2; }
+      .cite { display:inline-block; vertical-align:super; margin-left:.1em; color:var(--rain-dark); font:600 .62em/1 var(--mono); text-decoration:none; }
+      .cite:hover { color:var(--signal); }
+      .reveal { opacity:0; transform:translateY(18px); transition:opacity .55s var(--ease),transform .55s var(--ease); }
+      .reveal.is-visible { opacity:1; transform:none; }
 
-      .hero { position: relative; min-height: min(760px, calc(100vh - 78px)); overflow: hidden; background: #dce9eb; isolation: isolate; }
-      .hero::before { content: ''; position: absolute; inset: 0; z-index: -2; background: linear-gradient(90deg, rgba(244,245,242,.99) 0%, rgba(244,245,242,.96) 40%, rgba(244,245,242,.45) 61%, rgba(218,233,235,.08) 100%), linear-gradient(180deg, #d0e7ed 0%, #e6f0f0 62%, #becfc0 62%, #aac19f 100%); }
-      .hero::after { content: ''; position: absolute; z-index: -1; inset: 0; opacity: .18; background-image: radial-gradient(rgba(16,43,66,.20) .55px, transparent .55px); background-size: 5px 5px; mix-blend-mode: multiply; }
-      .hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(380px, .95fr); width: min(1280px, calc(100% - 48px)); min-height: inherit; margin: auto; }
-      .hero-copy { display: flex; flex-direction: column; justify-content: center; padding: 7.5rem 0 5.6rem 6.6rem; border-left: 1px solid rgba(16,43,66,.24); }
-      .hero-diagram { position: absolute; z-index: 0; inset: 0 0 0 27%; min-width: 710px; pointer-events: none; }
-      .hero-diagram svg { width: 100%; height: 100%; }
-      .hero-diagram .cloud-main { filter: drop-shadow(0 18px 10px rgba(16,43,66,.10)); }
-      .hero-diagram .weather-label { fill: #24475b; font-family: var(--mono); font-size: 13px; letter-spacing: .12em; }
-      .hero-diagram .guide-line { stroke: #406b7f; stroke-width: 1; opacity: .52; }
-      .hero-diagram .airline { stroke-dasharray: 5 9; animation: airflow 3.2s linear infinite; }
-      @keyframes airflow { to { stroke-dashoffset: -54; } }
-      .eyebrow { display: inline-flex; align-items: center; gap: .65rem; margin: 0 0 1.35rem; color: var(--rain-deep); font-family: var(--mono); font-size: .72rem; font-weight: 500; letter-spacing: .12em; line-height: 1.4; }
-      .eyebrow::before { width: 1.9rem; height: 1px; background: currentColor; content: ''; }
-      h1, h2, h3, p { margin-top: 0; }
-      h1 { max-width: 780px; margin-bottom: 1.65rem; font-family: var(--display); font-size: clamp(3rem, 6.4vw, 6.6rem); font-weight: 900; letter-spacing: -.08em; line-height: 1.12; }
-      h1 em { position: relative; z-index: 0; font-style: normal; white-space: nowrap; }
-      h1 em::after { position: absolute; z-index: -1; right: -.02em; bottom: .08em; left: -.05em; height: .24em; background: var(--amber); content: ''; transform: skewX(-10deg); }
-      .hero-lead { max-width: 580px; margin-bottom: 2.25rem; color: #314d5f; font-size: clamp(1rem, 1.5vw, 1.18rem); font-weight: 500; line-height: 2; }
-      .hero-meta { display: flex; align-items: center; gap: 1.3rem; color: var(--ink-soft); font-family: var(--mono); font-size: .65rem; letter-spacing: .04em; }
-      .hero-meta span { display: inline-flex; align-items: center; gap: .45rem; }
-      .hero-meta span::before { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); content: ''; }
-      .hero-aside { position: relative; min-height: 100%; }
-      .cloud-scale { position: absolute; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; width: 100%; padding: 2rem 0 2rem 2.2rem; border-left: 1px solid rgba(255,255,255,.48); color: rgba(255,255,255,.8); font-family: var(--mono); font-size: .62rem; letter-spacing: .06em; }
-      .cloud-scale div { position: relative; display: flex; align-items: center; gap: .75rem; }
-      .cloud-scale div::after { width: 3.2rem; height: 1px; background: currentColor; content: ''; }
-      .hero-stamp { position: absolute; right: 2.3rem; bottom: 2.5rem; display: flex; width: 154px; height: 154px; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.85); border-radius: 50%; background: rgba(16,43,66,.14); color: #fff; font-family: var(--mono); font-size: .66rem; letter-spacing: .09em; line-height: 1.65; text-align: center; backdrop-filter: blur(5px); transform: rotate(10deg); }
-      .hero-stamp strong { display: block; color: var(--amber); font-size: 1.6rem; }
+      .takeaway { display:grid; grid-template-columns:1.05fr .95fr; gap:5rem; align-items:start; padding:5.5rem 0; border-top:1px solid var(--line); }
+      .statement { margin:0; font-family:var(--display); font-size:clamp(1.6rem,2.8vw,2.95rem); font-weight:700; letter-spacing:-.055em; line-height:1.52; }
+      .statement mark { padding:0 .05em; background:linear-gradient(transparent 65%,var(--amber-pale) 0); color:inherit; }
+      .fine { color:var(--muted); font-size:.94rem; }
+      .mono-note { padding-left:1rem; border-left:2px solid var(--amber); color:var(--muted); font:.72rem/1.9 var(--mono); }
+      .observation-list { display:grid; gap:0; border-top:1px solid var(--line); }
+      .observation { display:grid; grid-template-columns:4.5rem 1fr 100px; gap:1rem; align-items:start; padding:1.25rem 0; border-bottom:1px solid var(--line); }
+      .observation-num { color:var(--rain-dark); font:500 .66rem/1.3 var(--mono); letter-spacing:.06em; }
+      .observation h3 { margin:0 0 .2rem; font-family:var(--display); font-size:1.08rem; letter-spacing:-.03em; line-height:1.45; }
+      .observation p { margin:0; color:var(--muted); font-size:.83rem; line-height:1.75; }
+      .observation-tag { justify-self:end; color:var(--signal); font:600 .61rem/1.3 var(--mono); letter-spacing:.06em; text-align:right; }
 
-      .section { position: relative; padding: 8rem 0; }
-      .section::before { position: absolute; top: 0; bottom: 0; left: max(24px, calc((100% - 1120px) / 2)); width: 1px; background: linear-gradient(180deg, transparent, rgba(54,127,165,.28) 12%, rgba(54,127,165,.28) 88%, transparent); content: ''; }
-      .section-inner { position: relative; width: min(1120px, calc(100% - 48px)); margin: auto; }
-      .section-inner::before { position: absolute; top: 0; left: -2.5rem; color: rgba(29,85,123,.72); content: '↑\A 12 KM\A ·\A 00 KM'; white-space: pre; font-family: var(--mono); font-size: .52rem; line-height: 1.45; letter-spacing: .05em; }
-      .section-label { display: flex; align-items: center; gap: .7rem; margin-bottom: 1.6rem; color: var(--rain-deep); font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; }
-      .section-label::before { width: 18px; height: 18px; background: url('/manus-storage/rainrise-mark_e0630605.png') center / contain no-repeat; content: ''; }
-      .section-label::after { width: 100%; max-width: 78px; height: 1px; background: currentColor; content: ''; }
-      h2 { max-width: 900px; margin-bottom: 1.3rem; font-family: var(--display); font-size: clamp(2.1rem, 4vw, 4.3rem); font-weight: 900; letter-spacing: -.065em; line-height: 1.25; }
-      h2 .amber { color: var(--amber); }
-      .section-intro { max-width: 700px; margin-bottom: 3.3rem; color: var(--ink-soft); font-size: 1.06rem; line-height: 2; }
-      .cite { display: inline-block; vertical-align: super; margin-left: .1em; color: var(--rain-deep); font-family: var(--mono); font-size: .62em; font-weight: 600; text-decoration: none; }
-      .cite:hover { color: var(--signal); }
-      .alt-statement { display: grid; grid-template-columns: 1.05fr .95fr; gap: 5rem; align-items: start; padding: 5.6rem 0; border-top: 1px solid var(--line); }
-      .statement { margin: 0; font-family: var(--display); font-size: clamp(1.6rem, 2.8vw, 2.9rem); font-weight: 700; letter-spacing: -.055em; line-height: 1.5; }
-      .statement mark { padding: 0 .05em; background: linear-gradient(transparent 64%, var(--amber-pale) 0); color: inherit; }
-      .fine { color: var(--ink-soft); font-size: .94rem; }
-      .mono-note { padding-left: 1.1rem; border-left: 2px solid var(--amber); color: var(--ink-soft); font-family: var(--mono); font-size: .72rem; line-height: 1.9; }
+      .dark-band { overflow:hidden; background:linear-gradient(110deg,#102b42 0%,#0c334b 57%,#124e68 100%); color:#fff; }
+      .dark-band::before { background:linear-gradient(180deg,transparent,rgba(243,168,75,.64) 12%,rgba(243,168,75,.64) 88%,transparent); }
+      .dark-band .chapter-inner { padding:6rem 0; }
+      .dark-band .chapter-inner::before { color:rgba(255,240,217,.75); }
+      .dark-band .chapter-label { color:var(--amber); }
+      .dark-band .intro { color:#c7d8de; }
+      .numbers { display:grid; grid-template-columns:repeat(3,1fr); margin-top:4.25rem; border-top:1px solid rgba(255,255,255,.28); }
+      .number { min-height:242px; padding:1.8rem 1.8rem 1.2rem 0; border-right:1px solid rgba(255,255,255,.28); }
+      .number + .number { padding-left:1.8rem; }
+      .number:last-child { border-right:0; }
+      .number small { display:block; margin-bottom:.6rem; color:#a8c8d6; font:500 .64rem/1.4 var(--mono); letter-spacing:.08em; }
+      .number strong { display:block; color:var(--amber); font-family:var(--display); font-size:clamp(3.4rem,5.5vw,5.5rem); font-weight:900; letter-spacing:-.1em; line-height:1; }
+      .number strong span { margin-left:.12em; font-size:.36em; letter-spacing:-.02em; }
+      .number p { max-width:260px; margin:1rem 0 0; color:#d6e3e7; font-size:.84rem; line-height:1.8; }
+      .source-note { margin-top:2rem; color:#9db9c4; font:.63rem/1.9 var(--mono); }
 
-      .data-band { overflow: hidden; background: linear-gradient(90deg, #102b42 0%, #0c3148 58%, #12445b 100%); color: var(--cloud); }
-      .data-band::before { background: linear-gradient(180deg, transparent, rgba(243,168,75,.54) 12%, rgba(243,168,75,.54) 88%, transparent); }
-      .data-band .section-inner::before { color: rgba(255,240,217,.72); }
-      .data-band .section-inner { padding: 6.2rem 0; }
-      .data-band .section-label { color: var(--amber); }
-      .data-band h2 { max-width: 730px; }
-      .data-band .section-intro { color: #c3d2d8; }
-      .metrics { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 4.5rem; border-top: 1px solid rgba(255,255,255,.27); }
-      .metric { min-height: 255px; padding: 2rem 2rem 1.3rem 0; border-right: 1px solid rgba(255,255,255,.27); }
-      .metric + .metric { padding-left: 2rem; }
-      .metric:last-child { border-right: 0; }
-      .metric-kicker { margin-bottom: .7rem; color: #a7c4d1; font-family: var(--mono); font-size: .66rem; letter-spacing: .07em; }
-      .metric-value { margin: 0; color: var(--amber); font-family: var(--display); font-size: clamp(3.4rem, 6vw, 5.7rem); font-weight: 900; letter-spacing: -.09em; line-height: 1; }
-      .metric-unit { margin-left: .12em; font-size: .36em; letter-spacing: -.02em; }
-      .metric-desc { margin: 1rem 0 0; color: #dce6e8; font-size: .86rem; line-height: 1.8; }
-      .data-source { margin-top: 2.4rem; color: #94aeb9; font-family: var(--mono); font-size: .65rem; line-height: 1.9; }
+      .photo-evidence { background:var(--paper-2); }
+      .photo-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:1.2rem; margin-top:3.7rem; }
+      .photo { position:relative; min-height:285px; overflow:hidden; background:var(--ink); }
+      .photo img { width:100%; height:100%; object-fit:cover; transition:transform .65s var(--ease); }
+      .photo:hover img { transform:scale(1.04); }
+      .photo figcaption { position:absolute; right:0; bottom:0; left:0; padding:1.25rem 1.35rem; background:linear-gradient(transparent,rgba(16,43,66,.88)); color:#fff; font-size:.83rem; line-height:1.7; }
+      .photo figcaption small { display:block; color:#d7edf3; font:500 .59rem/1.5 var(--mono); letter-spacing:.09em; }
+      .photo-stack { display:grid; grid-template-rows:1fr 1fr; gap:1.2rem; }
+      .photo-stack .photo { min-height:135px; }
 
-      .process { overflow: hidden; background: var(--cloud); }
-      .process-intro { display: grid; grid-template-columns: .72fr 1.28fr; gap: 3rem; align-items: end; margin-bottom: 4.3rem; }
-      .process-intro h2 { margin-bottom: 0; }
-      .process-figure { position: relative; min-height: 570px; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(180deg, #d9ebf0 0%, #f5f5f0 75%, #d7e5d4 75%); }
-      .process-figure svg { position: absolute; width: 100%; height: 100%; }
-      .process-notes { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; height: 100%; align-items: end; background: rgba(16,43,66,.13); }
-      .process-note { min-height: 205px; padding: 1.6rem 1.5rem; background: rgba(255,255,255,.88); backdrop-filter: blur(6px); }
-      .process-note strong { display: block; margin-bottom: .55rem; font-family: var(--display); font-size: 1.27rem; letter-spacing: -.04em; }
-      .process-note span { color: var(--ink-soft); font-size: .82rem; line-height: 1.75; }
-      .process-note .num { display: block; margin-bottom: .4rem; color: var(--rain-deep); font-family: var(--mono); font-size: .68rem; }
-      .figure-caption { padding: .75rem 1rem; color: var(--ink-soft); font-family: var(--mono); font-size: .63rem; line-height: 1.7; }
+      .diagram-chapter { background:#fff; }
+      .diagram-header { display:grid; grid-template-columns:.72fr 1.28fr; gap:3rem; align-items:end; margin-bottom:3.8rem; }
+      .diagram-header h2 { margin-bottom:0; }
+      .flow-figure { overflow:hidden; border:1px solid var(--line); background:linear-gradient(180deg,#dceef1 0%,#f8f8f4 63%,#bbd3af 63%,#8dad7e 100%); }
+      .flow-figure svg { display:block; width:100%; height:auto; }
+      .flow-steps { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); }
+      .flow-step { min-height:180px; padding:1.35rem 1.35rem 1.55rem; border-right:1px solid var(--line); background:rgba(255,255,255,.93); }
+      .flow-step:last-child { border-right:0; }
+      .flow-step .step-num { display:block; margin-bottom:.45rem; color:var(--rain-dark); font:500 .65rem/1.4 var(--mono); letter-spacing:.08em; }
+      .flow-step strong { display:block; margin-bottom:.35rem; font-family:var(--display); font-size:1.16rem; letter-spacing:-.03em; line-height:1.4; }
+      .flow-step p { margin:0; color:var(--muted); font-size:.8rem; line-height:1.75; }
+      .caption { margin:.75rem 0 0; color:var(--muted); font:.63rem/1.75 var(--mono); }
 
-      .comparison { background: var(--paper-deep); }
-      .compare-layout { display: grid; grid-template-columns: .88fr 1.12fr; gap: 5rem; align-items: start; }
-      .compare-aside { position: sticky; top: 110px; }
-      .comparison table { width: 100%; border-collapse: collapse; font-size: .94rem; }
-      .comparison th, .comparison td { padding: 1.25rem .8rem; border-bottom: 1px solid #bdcdcc; vertical-align: top; text-align: left; }
-      .comparison th { width: 31%; color: var(--rain-deep); font-family: var(--mono); font-size: .7rem; font-weight: 500; letter-spacing: .05em; }
-      .comparison td { color: var(--ink-soft); line-height: 1.75; }
-      .comparison tr:first-child th, .comparison tr:first-child td { border-top: 1px solid #bdcdcc; }
-      .comparison .outcome { color: var(--ink); font-weight: 600; }
-      .image-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 4.4rem; }
-      .image-card { position: relative; overflow: hidden; min-height: 355px; background: var(--ink); }
-      .image-card img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--eased); }
-      .image-card:hover img { transform: scale(1.045); }
-      .image-caption { position: absolute; right: 0; bottom: 0; left: 0; padding: 1.25rem 1.35rem; background: linear-gradient(transparent, rgba(16,43,66,.86)); color: white; font-size: .82rem; }
-      .image-caption small { display: block; color: #d5e5e9; font-family: var(--mono); font-size: .58rem; letter-spacing: .08em; }
+      .data-chapter { background:var(--paper); }
+      .data-layout { display:grid; grid-template-columns:.74fr 1.26fr; gap:4.6rem; align-items:start; }
+      .data-aside { position:sticky; top:106px; }
+      .chart-panel { position:relative; padding:1.4rem; border:1px solid var(--line); border-top:4px solid var(--amber); background-color:#fff; background-image:linear-gradient(90deg,rgba(16,43,66,.035) 1px,transparent 1px); background-size:42px 100%; }
+      .future .chart-panel { border-top-color:var(--signal); }
+      .chart-panel > * { position:relative; }
+      .chart-caption { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; padding:.1rem .15rem 1rem; border-bottom:1px solid var(--line); }
+      .chart-caption p { margin:0; color:var(--muted); font-size:.75rem; line-height:1.65; }
+      .chart-caption strong { display:block; color:var(--ink); font:600 .66rem/1.5 var(--mono); letter-spacing:.07em; }
+      .chart-host { width:100%; height:390px; margin-top:1rem; }
+      .table-wrap { overflow-x:auto; margin-top:1.4rem; }
+      table { width:100%; border-collapse:collapse; font-size:.84rem; }
+      th,td { padding:.95rem .72rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+      th { color:var(--rain-dark); font:500 .65rem/1.45 var(--mono); letter-spacing:.05em; }
+      td { color:var(--muted); line-height:1.65; }
+      tbody tr:first-child th,tbody tr:first-child td { border-top:1px solid var(--line); }
+      td strong { color:var(--ink); }
+      .table-note { margin:.8rem 0 0; color:var(--muted); font-size:.72rem; line-height:1.75; }
 
-      .watch { background: var(--cloud); }
-      .watch-layout { display: grid; grid-template-columns: 1fr 1.42fr; gap: 6.5rem; }
-      .watch-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
-      .watch-item { display: grid; grid-template-columns: 4.8rem 1fr; gap: 1rem; padding: 1.65rem 0; border-bottom: 1px solid var(--line); }
-      .watch-item strong { color: var(--rain-deep); font-family: var(--mono); font-size: .75rem; font-weight: 500; }
-      .watch-item h3 { margin-bottom: .35rem; font-family: var(--display); font-size: 1.35rem; letter-spacing: -.035em; line-height: 1.45; }
-      .watch-item p { margin: 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.8; }
-      .warning-box { position: relative; padding: 2.5rem 2.7rem; background: var(--amber-pale); border-top: 4px solid var(--amber); }
-      .warning-box::after { position: absolute; right: 1.8rem; top: -1.3rem; color: rgba(243,168,75,.34); content: '!'; font-family: var(--display); font-size: 7rem; font-weight: 900; line-height: 1; }
-      .warning-box h3 { position: relative; margin-bottom: .65rem; font-family: var(--display); font-size: 1.7rem; letter-spacing: -.05em; }
-      .warning-box p { position: relative; margin: 0; color: #76552d; font-size: .92rem; line-height: 1.9; }
+      .future { background:#e7f1f3; }
+      .future-layout { display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; align-items:start; margin-top:3.8rem; }
+      .scenario { min-height:100%; padding:2rem; border-top:4px solid var(--signal); background:#fff; }
+      .scenario.alt { border-color:var(--amber); }
+      .scenario .scenario-code { color:var(--signal); font:600 .66rem/1.4 var(--mono); letter-spacing:.08em; }
+      .scenario.alt .scenario-code { color:#ad6e22; }
+      .scenario h3 { margin:1rem 0 .8rem; font-family:var(--display); font-size:1.75rem; letter-spacing:-.05em; }
+      .scenario p { color:var(--muted); font-size:.88rem; line-height:1.85; }
+      .future .chart-panel { margin-top:1.3rem; }
+      .future .chart-host { height:330px; }
 
-      .action { overflow: hidden; background: #104c70; color: var(--cloud); }
-      .action::before { background: linear-gradient(180deg, transparent, rgba(163,222,247,.7) 12%, rgba(163,222,247,.7) 88%, transparent); }
-      .action .section-inner::before { color: rgba(218,246,255,.8); }
-      .action-head { display: grid; grid-template-columns: 1fr .9fr; gap: 4rem; align-items: end; }
-      .action .section-label { color: #a3def7; }
-      .action .section-intro { margin-bottom: 0; color: #c3d2d8; }
-      .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 4.6rem; border-top: 1px solid rgba(255,255,255,.3); }
-      .action-card { position: relative; min-height: 320px; padding: 2.2rem 2rem 2.1rem 0; border-right: 1px solid rgba(255,255,255,.3); }
-      .action-card + .action-card { padding-left: 2rem; }
-      .action-card:last-child { border-right: 0; }
-      .action-number { color: #a3def7; font-family: var(--mono); font-size: .75rem; letter-spacing: .1em; }
-      .action-card h3 { max-width: 250px; margin: 1.2rem 0 1rem; font-family: var(--display); font-size: 1.72rem; letter-spacing: -.055em; line-height: 1.38; }
-      .action-card p { max-width: 290px; margin: 0; color: #c8d7dc; font-size: .9rem; line-height: 1.88; }
-      .action-link { display: inline-flex; align-items: center; gap: .5rem; margin-top: 1.5rem; color: #a3def7; font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .04em; }
-      .action-link .bi { font-size: .95rem; }
+      .prepare { overflow:hidden; background:#104b6f; color:#fff; }
+      .prepare::before { background:linear-gradient(180deg,transparent,rgba(163,222,247,.7) 12%,rgba(163,222,247,.7) 88%,transparent); }
+      .prepare .chapter-inner::before { color:rgba(218,246,255,.85); }
+      .prepare .chapter-label { color:#bde8f5; }
+      .prepare .intro { color:#c7dbe2; }
+      .action-grid { display:grid; grid-template-columns:repeat(3,1fr); margin-top:4rem; border-top:1px solid rgba(255,255,255,.32); }
+      .action { min-height:310px; padding:2rem 1.8rem 1.4rem 0; border-right:1px solid rgba(255,255,255,.32); }
+      .action + .action { padding-left:1.8rem; }
+      .action:last-child { border-right:0; }
+      .action .action-code { color:#a9dcf0; font:500 .67rem/1.4 var(--mono); letter-spacing:.09em; }
+      .action h3 { max-width:250px; margin:1.05rem 0 .9rem; font-family:var(--display); font-size:1.65rem; letter-spacing:-.05em; line-height:1.4; }
+      .action p { max-width:295px; color:#cbdde3; font-size:.87rem; line-height:1.85; }
+      .action a { display:inline-flex; align-items:center; gap:.5rem; margin-top:1.1rem; color:#a9dcf0; font:500 .67rem/1.4 var(--mono); letter-spacing:.04em; }
+      .action a .bi { font-size:.95rem; }
+      .safe-photo { display:grid; grid-template-columns:.8fr 1.2fr; gap:2.2rem; align-items:center; margin-top:4.7rem; padding-top:3.7rem; border-top:1px solid rgba(255,255,255,.32); }
+      .safe-photo figure { margin:0; overflow:hidden; }
+      .safe-photo img { width:100%; aspect-ratio:4/3; object-fit:cover; }
+      .safe-photo figcaption { margin-top:.55rem; color:#a9c8d4; font:.59rem/1.6 var(--mono); }
+      .safe-quote { font-family:var(--display); font-size:clamp(1.55rem,2.8vw,2.75rem); font-weight:700; letter-spacing:-.06em; line-height:1.5; }
 
-      .hazard { overflow: hidden; background: #e7f3f5; }
-      .hazard::before { background: linear-gradient(180deg, transparent, rgba(54,127,165,.58) 12%, rgba(54,127,165,.58) 88%, transparent); }
-      .hazard .section-inner::before { color: rgba(29,85,123,.78); }
-      .hazard-grid { display: grid; grid-template-columns: .88fr 1.12fr; gap: 3.3rem; margin-top: 3.8rem; }
-      .hazard-intro { position: relative; min-height: 340px; padding: 2.25rem 2.4rem; overflow: hidden; background: var(--ink); color: var(--cloud); }
-      .hazard-intro::before { position: absolute; right: -1.2rem; bottom: -3.9rem; color: rgba(163,222,247,.16); content: '\F3E8'; font-family: 'bootstrap-icons'; font-size: 15rem; transform: rotate(-10deg); }
-      .hazard-icon { color: #a3def7; font-size: 2.2rem; }
-      .hazard-intro h3 { position: relative; max-width: 320px; margin: 1.15rem 0 .75rem; font-family: var(--display); font-size: 1.75rem; letter-spacing: -.05em; line-height: 1.4; }
-      .hazard-intro p { position: relative; max-width: 390px; margin-bottom: 1.5rem; color: #cce0e6; font-size: .88rem; line-height: 1.85; }
-      .hazard-portal { position: relative; display: inline-flex; align-items: center; gap: .55rem; padding-bottom: .15rem; border-bottom: 1px solid #a3def7; color: #a3def7; font-family: var(--mono); font-size: .68rem; font-weight: 500; letter-spacing: .03em; text-decoration: none; }
-      .hazard-portal .bi { font-size: .96rem; }
-      .hazard-picker { padding: 2.25rem 2.4rem; border: 1px solid #b9d1d8; background: rgba(255,255,255,.82); }
-      .hazard-picker label { display: block; margin-bottom: .65rem; color: var(--rain-deep); font-family: var(--mono); font-size: .69rem; font-weight: 600; letter-spacing: .08em; }
-      .hazard-picker label .bi { margin-right: .4rem; font-size: 1rem; }
-      .hazard-picker select { width: 100%; min-height: 52px; padding: .7rem .9rem; border: 1px solid #aabfc5; border-radius: 0; background: var(--cloud); color: var(--ink); font: 500 1rem var(--sans); }
-      .hazard-picker select:focus-visible, .hazard-open:focus-visible { outline: 3px solid rgba(54,127,165,.45); outline-offset: 3px; }
-      .hazard-open { display: flex; align-items: center; justify-content: space-between; gap: .8rem; width: 100%; margin-top: 1.1rem; padding: 1rem 1.1rem; background: #28789d; color: #fff; font-family: var(--sans); font-size: .92rem; font-weight: 700; line-height: 1.4; text-decoration: none; transition: background .16s var(--eased), transform .16s var(--eased); }
-      .hazard-open:hover { background: #155a7d; transform: translateY(-2px); }
-      .hazard-open .bi { color: #d5f1fa; font-size: 1.05rem; }
-      .hazard-open.is-disabled { background: #9eafb3; cursor: not-allowed; opacity: .82; pointer-events: none; }
-      .hazard-status { min-height: 1.9em; margin: 1rem 0 0; color: var(--ink-soft); font-size: .78rem; line-height: 1.7; }
-      .hazard-note { margin: 1.5rem 0 0; color: var(--ink-soft); font-size: .78rem; line-height: 1.85; }
+      .hazard { background:#e8f4f6; }
+      .hazard-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:3.2rem; margin-top:3.8rem; }
+      .hazard-intro { position:relative; min-height:340px; overflow:hidden; padding:2.2rem 2.3rem; background:var(--ink); color:#fff; }
+      .hazard-intro::before { position:absolute; right:-1.3rem; bottom:-3.7rem; color:rgba(163,222,247,.16); content:'\F3E8'; font-family:'bootstrap-icons'; font-size:15rem; transform:rotate(-9deg); }
+      .hazard-intro > * { position:relative; }
+      .hazard-intro .bi { color:#a3def7; font-size:2.2rem; }
+      .hazard-intro h3 { max-width:340px; margin:1rem 0 .7rem; font-family:var(--display); font-size:1.7rem; letter-spacing:-.05em; line-height:1.42; }
+      .hazard-intro p { max-width:390px; color:#cde0e6; font-size:.87rem; line-height:1.85; }
+      .hazard-intro a { display:inline-flex; align-items:center; gap:.45rem; padding-bottom:.12rem; border-bottom:1px solid #a3def7; color:#a3def7; font:500 .67rem/1.4 var(--mono); letter-spacing:.04em; text-decoration:none; }
+      .hazard-intro a .bi { font-size:.95rem; }
+      .hazard-picker { padding:2.2rem 2.3rem; border:1px solid #b8d3d8; background:rgba(255,255,255,.84); }
+      .hazard-picker label { display:block; margin-bottom:.65rem; color:var(--rain-dark); font:600 .68rem/1.5 var(--mono); letter-spacing:.08em; }
+      .hazard-picker label .bi { margin-right:.38rem; font-size:1rem; }
+      .hazard-picker select { width:100%; min-height:53px; padding:.7rem .9rem; border:1px solid #a7bcc2; border-radius:0; background:#fff; color:var(--ink); }
+      .hazard-open { display:flex; align-items:center; justify-content:space-between; gap:.6rem; width:100%; margin-top:1rem; padding:1rem 1.05rem; background:var(--signal); color:#fff; font-size:.9rem; font-weight:700; text-decoration:none; transition:background .16s var(--ease),transform .16s var(--ease); }
+      .hazard-open:hover { background:#075b7a; transform:translateY(-2px); }
+      .hazard-open .bi { color:#d9f3f8; font-size:1.05rem; }
+      .hazard-open.is-disabled { background:#9daeb2; pointer-events:none; }
+      .hazard-status { min-height:1.8em; margin:1rem 0 0; color:var(--muted); font-size:.77rem; line-height:1.7; }
+      .hazard-note { margin:1.4rem 0 0; color:var(--muted); font-size:.78rem; line-height:1.85; }
 
-      .sources { padding: 6rem 0 2rem; background: var(--paper); }
-      .sources-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: 4rem; padding-bottom: 3rem; border-bottom: 1px solid var(--line); }
-      .sources h2 { margin-bottom: 0; font-size: clamp(1.8rem, 3.1vw, 3.1rem); }
-      .source-list { margin: 0; padding: 0; list-style: none; counter-reset: source; }
-      .source-list li { position: relative; padding: 0 0 1.1rem 2.4rem; counter-increment: source; color: var(--ink-soft); font-size: .88rem; line-height: 1.75; }
-      .source-list li::before { position: absolute; left: 0; color: var(--rain-deep); content: '[' counter(source) ']'; font-family: var(--mono); font-size: .72rem; }
-      .source-list a { color: var(--ink); font-weight: 500; }
-      .copyright-note { margin-top: 1.55rem; color: var(--ink-soft); font-size: .77rem; line-height: 1.8; }
-      .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: min(1120px, calc(100% - 48px)); margin: auto; padding: 1.75rem 0 2.2rem; color: var(--ink-soft); font-family: var(--mono); font-size: .63rem; letter-spacing: .03em; }
-      .footer-brand { display: inline-flex; align-items: center; gap: .5rem; color: var(--ink); font-weight: 600; text-decoration: none; }
-      .footer-brand img { width: 25px; height: 25px; }
-      .reveal { opacity: 0; transform: translateY(18px); transition: opacity .55s var(--eased), transform .55s var(--eased); }
-      .reveal.is-visible { opacity: 1; transform: none; }
-      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; } .reveal { opacity: 1; transform: none; } }
-      @media (max-width: 820px) {
-        .site-header { height: 68px; } .nav-inner { width: min(100% - 32px, 1280px); }
-        .nav-toggle { display: block; padding: .5rem; } .nav-links { position: absolute; top: 68px; right: 0; left: 0; display: none; flex-direction: column; align-items: stretch; gap: 0; padding: .7rem 1rem 1rem; border-bottom: 1px solid var(--line); background: var(--paper); } .nav-links.open { display: flex; } .nav-links a { padding: .75rem .25rem; } .nav-cta { padding: .75rem .6rem !important; text-align: center; }
-        .hero { min-height: 700px; } .hero::before { background: linear-gradient(90deg, rgba(244,245,242,.99) 0%, rgba(244,245,242,.95) 60%, rgba(244,245,242,.55) 100%), linear-gradient(180deg, #d0e7ed 0%, #e6f0f0 62%, #becfc0 62%, #aac19f 100%); } .hero-grid { display: block; width: min(100% - 32px, 1280px); } .hero-copy { min-height: 650px; padding: 5.5rem 0 4rem 1.3rem; } .hero-aside { display: none; } .hero-diagram { inset: 0 -45% 0 16%; opacity: .72; } .section::before, .section-inner::before { display: none; }
-        .section { padding: 5.4rem 0; } .section-inner { width: min(100% - 32px, 1120px); } .alt-statement, .process-intro, .compare-layout, .watch-layout, .action-head, .sources-grid, .hazard-grid { grid-template-columns: 1fr; gap: 2.2rem; } .compare-aside { position: static; }
-        .metrics, .action-grid { grid-template-columns: 1fr; } .metric, .metric + .metric, .action-card, .action-card + .action-card { min-height: 0; padding: 1.8rem 0; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.3); } .metric:last-child, .action-card:last-child { border-bottom: 0; }
-        .process-figure { min-height: 730px; } .process-notes { grid-template-columns: 1fr; align-content: end; } .process-note { min-height: 0; padding: 1rem 1.2rem; } .process-note span { font-size: .78rem; }
-        .image-pair { grid-template-columns: 1fr; } .image-card { min-height: 300px; } .hero-meta { flex-wrap: wrap; gap: .7rem 1.1rem; }
-      }
+      .sources { padding:6rem 0 2rem; background:var(--paper); }
+      .sources-grid { display:grid; grid-template-columns:.7fr 1.3fr; gap:4.2rem; padding-bottom:3rem; border-bottom:1px solid var(--line); }
+      .sources h2 { margin-bottom:0; font-size:clamp(1.8rem,3vw,3.1rem); }
+      .source-list { margin:0; padding:0; list-style:none; counter-reset:source; }
+      .source-list li { position:relative; padding:0 0 1.05rem 2.35rem; color:var(--muted); font-size:.86rem; line-height:1.8; counter-increment:source; }
+      .source-list li::before { position:absolute; left:0; color:var(--rain-dark); content:'[' counter(source) ']'; font:500 .7rem/1.6 var(--mono); }
+      .source-list a { color:var(--ink); font-weight:500; }
+      .license-note { margin:1.4rem 0 0; color:var(--muted); font-size:.75rem; line-height:1.8; }
+      .footer { display:flex; align-items:center; justify-content:space-between; gap:1rem; width:min(1120px,calc(100% - 48px)); margin:auto; padding:1.7rem 0 2.2rem; color:var(--muted); font:500 .62rem/1.5 var(--mono); letter-spacing:.04em; }
+      .footer a { display:inline-flex; align-items:center; gap:.48rem; color:var(--ink); font-weight:600; text-decoration:none; }
+      .footer img { width:31px; height:31px; }
+
+      .rain-tracker { position:fixed; z-index:80; right:1.1rem; bottom:1.1rem; display:grid; grid-template-columns:32px auto; gap:.65rem; align-items:end; width:192px; padding:.7rem; border:1px solid rgba(16,43,66,.18); background:rgba(244,245,242,.92); box-shadow:0 8px 28px rgba(16,43,66,.12); backdrop-filter:blur(12px); }
+      .gauge { position:relative; width:10px; height:80px; margin-left:auto; overflow:hidden; border:1px solid var(--ink); background:#dce7e7; }
+      .gauge-fill { position:absolute; right:0; bottom:0; left:0; height:0; background:linear-gradient(180deg,var(--signal),var(--rain-dark)); transition:height .12s linear; }
+      .gauge-fill::after { position:absolute; top:-3px; right:-2px; left:-2px; height:6px; border-radius:50%; background:#bce7f2; content:''; }
+      .tracker-copy { min-width:0; }
+      .tracker-code { display:block; color:var(--rain-dark); font:500 .55rem/1.4 var(--mono); letter-spacing:.08em; }
+      .tracker-percent { display:block; color:var(--ink); font-family:var(--display); font-size:1.35rem; font-weight:900; letter-spacing:-.05em; line-height:1.05; }
+      .tracker-time,.tracker-location { display:block; overflow:hidden; color:var(--muted); font:500 .58rem/1.45 var(--mono); letter-spacing:.02em; text-overflow:ellipsis; white-space:nowrap; }
+
+      @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } .reveal { opacity:1; transform:none; } }
+      @media (max-width:980px) { .nav-links { gap:.8rem; } .nav-links a:not(.nav-cta) { display:none; } .hero-copy { padding-left:3rem; } .takeaway,.data-layout,.diagram-header,.sources-grid { grid-template-columns:1fr; gap:2.4rem; } .data-aside { position:static; } .photo-grid { grid-template-columns:1fr; } .photo-stack { grid-template-columns:1fr 1fr; grid-template-rows:none; } .future-layout,.safe-photo { grid-template-columns:1fr; } }
+      @media (max-width:720px) { body { font-size:15px; } .site-header { height:68px; } .nav-inner { width:calc(100% - 32px); } .brand { font-size:.7rem; } .brand img { width:35px; height:35px; } .nav-toggle { display:block; padding:.4rem; } .nav-links { position:absolute; top:68px; right:0; left:0; display:none; flex-direction:column; align-items:stretch; gap:0; padding:.6rem 1rem 1rem; border-bottom:1px solid var(--line); background:var(--paper); } .nav-links.open { display:flex; } .nav-links a,.nav-links a:not(.nav-cta) { display:block; padding:.72rem .25rem; } .nav-cta { margin-top:.35rem; text-align:center; } .hero { min-height:700px; } .hero::after { mask-image:none; background-size:50% 90px; } .hero-atmosphere { right:-43%; left:-32%; } .hero-inner { display:block; width:calc(100% - 32px); } .hero-copy { min-height:632px; padding:5.8rem 0 3.5rem 1.25rem; } .hero-aside { display:none; } h1 { font-size:clamp(3rem,15vw,4.5rem); } .chapter { padding:5.2rem 0; } .chapter::before,.chapter-inner::before { display:none; } .chapter-inner { width:calc(100% - 32px); } .numbers,.action-grid { grid-template-columns:1fr; } .number,.number + .number,.action,.action + .action { min-height:0; padding:1.7rem 0; border-right:0; border-bottom:1px solid rgba(255,255,255,.3); } .number:last-child,.action:last-child { border-bottom:0; } .observation { grid-template-columns:3.7rem 1fr; } .observation-tag { grid-column:2; justify-self:start; text-align:left; } .photo-stack { grid-template-columns:1fr; grid-template-rows:repeat(2,220px); } .photo { min-height:250px; } .flow-steps { grid-template-columns:1fr 1fr; } .flow-step:nth-child(2) { border-right:0; } .flow-step:nth-child(-n+2) { border-bottom:1px solid var(--line); } .flow-step { min-height:160px; padding:1.05rem; } .chart-panel { padding:.8rem; } .chart-host { height:350px; } .future .chart-host { height:300px; } .hazard-grid { grid-template-columns:1fr; gap:1.2rem; } .rain-tracker { right:.65rem; bottom:.65rem; width:166px; } .footer { width:calc(100% - 32px); flex-direction:column; align-items:flex-start; } }
     </style>
   </head>
   <body>
-    <a class="skip-link" href="#main">本文へ移動</a>
-    <div class="page-progress" aria-hidden="true"></div>
+    <a class="skip-link" href="#article">本文へ移動</a>
     <header class="site-header">
       <div class="nav-inner">
-        <a class="brand" href="#top" aria-label="rainrise トップへ">
-          <img src="/manus-storage/rainrise-mark_e0630605.png" alt="" />
-          <span>RAINRISE / FIELD NOTE</span>
-        </a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="メニューを開く">MENU</button>
+        <a class="brand" href="#top" aria-label="rainrise トップへ"><img src="/manus-storage/rainrise-mark_e0630605.png" alt="" /><span>RAINRISE / FIELD NOTE</span></a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="メニューを開く"><i class="bi bi-list" aria-hidden="true"></i></button>
         <nav id="site-navigation" class="nav-links" aria-label="ページ内ナビゲーション">
-          <a href="#why">なぜ増えた？</a>
-          <a href="#mechanism">しくみ</a>
-          <a href="#prepare">備える</a>
-          <a href="#hazard"><i class="bi bi-geo-alt" aria-hidden="true"></i>地域の地図</a>
-          <a class="nav-cta" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer"><i class="bi bi-cloud-rain-heavy-fill" aria-hidden="true"></i>キキクルを確認</a>
+          <a href="#why">観測</a><a href="#mechanism">しくみ</a><a href="#data">データ</a><a href="#future">これから</a><a href="#prepare">備える</a><a href="#hazard"><i class="bi bi-geo-alt" aria-hidden="true"></i>地域の地図</a><a class="nav-cta" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer"><i class="bi bi-cloud-rain-heavy-fill" aria-hidden="true"></i>キキクルを確認</a>
         </nav>
       </div>
     </header>
 
-    <main id="main">
-      <section id="top" class="hero" aria-labelledby="hero-title">
-        <div class="hero-diagram" aria-hidden="true">
-          <svg viewBox="0 0 1050 760" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <linearGradient id="heroCloud" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#fcfffe"/><stop offset=".62" stop-color="#d7e5e5"/><stop offset="1" stop-color="#a3bdc3"/></linearGradient>
-              <linearGradient id="heroRain" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#4d9fbd" stop-opacity=".68"/><stop offset="1" stop-color="#1b5c81" stop-opacity=".84"/></linearGradient>
-              <marker id="heroArrow" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9Z" fill="#f3a84b"/></marker>
-              <pattern id="heroRainLines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><line x1="0" y1="0" x2="0" y2="20" stroke="#effdff" stroke-width="4" opacity=".72"/></pattern>
-            </defs>
-            <g class="guide-line"><path d="M40 115 H1000"/><path d="M40 260 H1000"/><path d="M40 405 H1000"/><path d="M40 550 H1000"/></g>
-            <g class="weather-label"><text x="56" y="105">12 km / ICE CAP</text><text x="56" y="250">08 km / CLOUD TOWER</text><text x="56" y="395">04 km / UPDRAFT</text><text x="56" y="540">00 km / SURFACE</text></g>
-            <g class="cloud-main"><path d="M278 530 C234 486 260 421 324 400 C293 347 331 293 386 287 C361 220 413 167 482 177 C499 119 575 93 622 143 C684 83 782 121 788 208 C865 185 925 241 903 305 C981 326 990 407 922 444 C952 492 895 537 835 512 L342 548 C315 552 293 547 278 530Z" fill="url(#heroCloud)" stroke="#86a7b2" stroke-width="3"/><path d="M643 340 C723 299 867 313 915 378 C944 418 946 474 953 585 L683 585 C688 508 631 423 643 340Z" fill="url(#heroRain)"/><path d="M656 357 C737 322 864 334 910 389 C932 422 939 489 945 588 L698 588 C704 508 646 424 656 357Z" fill="url(#heroRainLines)" opacity=".94"/></g>
-            <path class="airline" d="M390 600 C368 528 385 462 440 401 C470 368 500 334 526 292" fill="none" stroke="#f3a84b" stroke-width="16" stroke-linecap="round" marker-end="url(#heroArrow)"/>
-            <path class="airline" d="M466 600 C448 535 473 480 524 434 C564 397 594 346 608 284" fill="none" stroke="#ffd495" stroke-width="8" stroke-linecap="round" marker-end="url(#heroArrow)"/>
-            <g fill="#ffffff" opacity=".94"><circle cx="512" cy="315" r="5"/><circle cx="534" cy="288" r="3"/><circle cx="556" cy="253" r="6"/><circle cx="590" cy="223" r="4"/><circle cx="634" cy="197" r="5"/></g>
-            <g class="weather-label"><text x="344" y="644" fill="#8b541c">WARM / HUMID AIR</text><text x="720" y="619" fill="#245d78">LOCAL RAIN CELL</text></g>
-            <g class="guide-line"><path d="M375 635 H306"/><path d="M730 610 H885"/></g>
-          </svg>
-        </div>
-        <div class="hero-grid">
-          <div class="hero-copy reveal">
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-atmosphere" aria-hidden="true"><svg viewBox="0 0 1440 790" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="heroCloudTone" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ffffff"/><stop offset=".58" stop-color="#dae9e9"/><stop offset="1" stop-color="#9ebbc1"/></linearGradient><linearGradient id="heroRainTone" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#6bb4cc" stop-opacity=".85"/><stop offset="1" stop-color="#174f74" stop-opacity=".92"/></linearGradient><pattern id="heroDrops" width="22" height="25" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><line x1="2" y1="0" x2="2" y2="17" stroke="#e9fbff" stroke-width="5" stroke-linecap="round"/></pattern><marker id="heroUpArrow" markerWidth="15" markerHeight="15" refX="10" refY="7.5" orient="auto"><path d="M0 0L15 7.5L0 15Z" fill="#f3a84b"/></marker></defs><g stroke="#3e6c80" stroke-width="1" opacity=".47"><path d="M52 105H1400"/><path d="M52 245H1400"/><path d="M52 385H1400"/><path d="M52 525H1400"/></g><g fill="#244c5f" font-family="IBM Plex Mono,monospace" font-size="13" letter-spacing="2"><text x="70" y="93">12 KM / ICE CAP</text><text x="70" y="233">08 KM / CLOUD TOWER</text><text x="70" y="373">04 KM / UPDRAFT</text><text x="70" y="513">00 KM / SURFACE</text></g><path d="M0 631 C160 605 312 648 464 620 C613 592 766 652 917 620 C1082 584 1275 625 1440 587 L1440 790H0Z" fill="#9ab38c"/><path d="M0 682 C173 652 331 698 483 671 C643 642 774 700 948 666 C1112 633 1293 678 1440 645 L1440 790H0Z" fill="#6e9978" opacity=".6"/><path d="M727 561 C681 524 702 473 746 451 C725 394 754 344 811 335 C794 264 846 205 914 224 C940 153 1036 134 1081 200 C1153 127 1259 171 1259 262 C1348 239 1400 305 1375 376 C1452 406 1446 496 1374 525 C1395 579 1331 623 1268 595 L777 610 C755 608 739 589 727 561Z" fill="url(#heroCloudTone)" stroke="#789ca7" stroke-width="4"/><path d="M1122 415 C1195 379 1333 392 1387 458 C1420 498 1428 555 1433 667H1153 C1165 585 1107 498 1122 415Z" fill="url(#heroRainTone)"/><path d="M1139 436 C1210 404 1326 419 1370 471 C1406 511 1418 573 1424 673H1171 C1183 588 1126 502 1139 436Z" fill="url(#heroDrops)"/><path d="M790 621 C767 541 783 459 844 380 C878 336 924 293 967 236" fill="none" stroke="#f3a84b" stroke-width="23" stroke-linecap="round" marker-end="url(#heroUpArrow)"/><path d="M874 621 C853 548 881 487 945 430 C987 393 1027 332 1041 265" fill="none" stroke="#ffd58e" stroke-width="10" stroke-linecap="round" marker-end="url(#heroUpArrow)"/><g fill="#fff"><circle cx="978" cy="263" r="7"/><circle cx="1007" cy="238" r="5"/><circle cx="1036" cy="218" r="7"/><circle cx="1076" cy="202" r="5"/></g><g fill="#294e61" font-family="IBM Plex Mono,monospace" font-size="14" letter-spacing="1.5"><text x="704" y="690">WARM / HUMID AIR</text><text x="1193" y="708">LOCAL RAIN CELL</text></g><g stroke="#294e61" stroke-width="1.5" opacity=".7"><path d="M742 680H596"/><path d="M1210 697H1370"/></g></svg></div>
+        <div class="hero-inner">
+          <div class="hero-copy">
             <p class="eyebrow">WEATHER FIELD NOTE / 01</p>
             <h1 id="hero-title">なぜ最近、<br /><em>ゲリラ豪雨</em>が<br />多いのか。</h1>
-            <p class="hero-lead">「晴れていたのに、急に土砂降り」。その背景には、局地的に発達する積乱雲と、より多くの水蒸気を含める暖かい空気があります。仕組みと備えを、約5分で。</p>
-            <div class="hero-meta"><span>READING TIME 05:00</span><span>UPDATED 2026.08.13</span></div>
+            <p class="hero-lead">「晴れていたのに、急に土砂降り」。局地的に育つ積乱雲と、より多くの水蒸気を含む暖かい空気が重なると、短時間の強い雨が生まれます。観測データ、4段階の図解、地域での備えから読み解きます。</p>
+            <div class="read-meta"><span id="hero-reading-time">READING TIME —</span><span id="hero-character-count">— CHARACTERS</span><span>UPDATED 2026.08.13</span></div>
           </div>
-          <div class="hero-aside" aria-hidden="true">
-            <div class="cloud-scale"><div>12 km</div><div>08 km</div><div>04 km</div><div>0 km</div></div>
-            <div class="hero-stamp">LOCAL HEAVY RAIN<strong>×</strong>READ THE SKY</div>
-          </div>
+          <div class="hero-aside" aria-hidden="true"><div class="altitude"><div>12 km / ICE CAP</div><div>08 km / CLOUD TOWER</div><div>04 km / RAIN CORE</div><div>00 km / SURFACE</div></div><div class="hero-mark">READ THE SKY<strong>×</strong>LOCAL RAIN</div></div>
         </div>
       </section>
 
-      <section id="why" class="section">
-        <div class="section-inner">
-          <div class="section-label reveal">SIGNAL / 01</div>
-          <div class="alt-statement reveal">
-            <p class="statement">最初に知っておきたいのは、<mark>「ゲリラ豪雨」は気象庁の正式用語ではない</mark>ということです。</p>
-            <div>
-              <p class="fine">気象庁は、急に強く降り、数十分の短時間に狭い範囲で数十mm程度の雨をもたらす現象を「局地的大雨」と呼びます。単独の発達した積乱雲で起こり、警報が出ていない状況でも、川や水路が急に増水することがあります。<a class="cite" href="#source-1" aria-label="出典1">[1]</a></p>
-              <p class="mono-note">言葉を正確にすると、見える危険も変わる。<br />「急」「狭い範囲」「短時間」が局地的大雨の要点です。</p>
+      <article id="article" data-reading-content>
+        <section id="why" class="chapter" data-chapter="観測：言葉を整える" aria-labelledby="why-title">
+          <div class="chapter-inner">
+            <div class="chapter-label reveal">SIGNAL / 01</div>
+            <div class="takeaway reveal">
+              <p class="statement" id="why-title">最初に知っておきたいのは、<mark>「ゲリラ豪雨」は気象庁の正式用語ではない</mark>ということです。</p>
+              <div><p class="fine">気象庁は、急に強く降り、数十分の短時間に狭い範囲で数十mm程度の雨をもたらす現象を「局地的大雨」と呼びます。単独の発達した積乱雲で起こり、警報が出ていない状況でも、川や水路が急に増水することがあります。<a class="cite" href="#source-1" aria-label="出典1">[1]</a></p><p class="mono-note">言葉を正確にすると、見える危険も変わる。<br />「急」「狭い範囲」「短時間」が局地的大雨の要点です。</p></div>
+            </div>
+            <div class="observation-list reveal" aria-label="局地的大雨を見分ける観測ポイント">
+              <div class="observation"><span class="observation-num">POINT 01</span><div><h3>空が急に暗くなる</h3><p>発達した積乱雲が近づくと、雲底が低く暗く見えます。遠くの空だけが暗いときも、早めに移動先を考えます。</p></div><span class="observation-tag">LOOK UP</span></div>
+              <div class="observation"><span class="observation-num">POINT 02</span><div><h3>雷鳴・冷たい風が届く</h3><p>雷の音、急に冷たくなる風は、積乱雲が近づいている目安です。屋外活動を続けない判断に使えます。<a class="cite" href="#source-3" aria-label="出典3">[3]</a></p></div><span class="observation-tag">LISTEN</span></div>
+              <div class="observation"><span class="observation-num">POINT 03</span><div><h3>雨は「近く」で急に強まる</h3><p>局地的大雨は範囲が狭いため、離れた場所の晴れや予報だけでは判断しにくいことがあります。雨雲レーダーと現地の空を合わせて見ます。</p></div><span class="observation-tag">CHECK NOW</span></div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="data-band" aria-labelledby="data-title">
-        <div class="section-inner">
-          <div class="section-label reveal">OBSERVATION / 1976—2024</div>
-          <h2 id="data-title" class="reveal">体感だけではない。<br /><span class="amber">強い雨ほど</span>、増える傾向。</h2>
-          <p class="section-intro reveal">全国アメダスの観測をもとにした気象庁の整理では、極端な大雨の頻度は増加し、雨が強いほど増加率が大きいと示されています。</p>
-          <div class="metrics reveal" aria-label="極端な大雨の変化">
-            <article class="metric"><p class="metric-kicker">1 HOUR ≥ 50 mm</p><p class="metric-value">1.5<span class="metric-unit">倍</span></p><p class="metric-desc">年間発生回数は、1976–1985年の約226回から、2015–2024年の約334回へ。</p></article>
-            <article class="metric"><p class="metric-kicker">1 HOUR ≥ 80 mm</p><p class="metric-value">1.7<span class="metric-unit">倍</span></p><p class="metric-desc">「猛烈な雨」に当たる強さは、約14回から約24回へ増加。</p></article>
-            <article class="metric"><p class="metric-kicker">3 HOURS ≥ 150 mm</p><p class="metric-value">1.8<span class="metric-unit">倍</span></p><p class="metric-desc">3時間の大雨も、約19回から約33回へ増加しています。</p></article>
+        <section class="chapter dark-band" data-chapter="観測：強い雨の変化" aria-labelledby="observed-title">
+          <div class="chapter-inner">
+            <div class="chapter-label reveal">OBSERVATION / 1976—2024</div>
+            <h2 id="observed-title" class="reveal">体感だけではない。<br /><span class="amber">強い雨ほど</span>、増える傾向。</h2>
+            <p class="intro reveal">全国アメダスの観測を整理した気象庁の評価では、極端な大雨の発生頻度は増加し、強い雨ほど増加率が大きいと示されています。年ごとの天候とは別に、長い期間の変化を見ることで「なぜ多いと感じるのか」の背景が見えます。<a class="cite" href="#source-2" aria-label="出典2">[2]</a></p>
+            <div class="numbers reveal" aria-label="極端な大雨の変化の要点"><div class="number"><small>1 HOUR ≥ 50 mm</small><strong>1.5<span>倍</span></strong><p>平均年間発生回数は、約226回から約334回へ。</p></div><div class="number"><small>1 HOUR ≥ 80 mm</small><strong>1.7<span>倍</span></strong><p>「猛烈な雨」に当たる強さは、約14回から約24回へ。</p></div><div class="number"><small>3 HOURS ≥ 150 mm</small><strong>1.8<span>倍</span></strong><p>3時間の大雨も、約19回から約33回へ。</p></div></div>
+            <p class="source-note">SOURCE: 気象庁「日本の気候変動2025」表5-1.1。年間・全国アメダス1,300地点当たりに換算した平均発生回数。<a class="cite" href="#source-2" aria-label="出典2">[2]</a></p>
           </div>
-          <p class="data-source">SOURCE: 気象庁「日本の気候変動2025」表5-1.1。いずれも全国アメダス1,300地点当たりに換算した平均年間発生回数の比較。<a class="cite" href="#source-2" aria-label="出典2">[2]</a></p>
-        </div>
-      </section>
+        </section>
 
-      <section id="mechanism" class="section process" aria-labelledby="mechanism-title">
-        <div class="section-inner">
-          <div class="process-intro">
-            <div class="reveal"><div class="section-label">MECHANISM / 02</div><h2 id="mechanism-title">雨が降る前に、<br />空気はすでに<br />動き始めています。</h2></div>
-            <p class="section-intro reveal">積乱雲は、湿った空気が強く上昇し、冷えて雲粒になることで育ちます。夏の日中は地表が温まりやすく、暖かく湿った空気が上向きに動く条件がそろいやすくなります。</p>
+        <section class="chapter photo-evidence" data-chapter="観測：空を読む" aria-labelledby="photo-title">
+          <div class="chapter-inner"><div class="chapter-label reveal">FIELD VIEW / 02</div><h2 id="photo-title" class="reveal">空を読むことは、<br />予報の代わりではなく、<br /><span class="amber">最後の確認</span>になる。</h2><p class="intro reveal">局地的大雨は空間的な偏りが強い現象です。レーダーや警報と並行して、現地の変化を見ておくことには意味があります。ただし、雲を見に危険な場所へ近づく必要はありません。</p>
+            <div class="photo-grid reveal"><figure class="photo"><img src="/manus-storage/rainrise-window-observation_8afaf6bc.jpg" alt="雨粒の付いた窓越しに見える、積乱雲の育つ都市の空" /><figcaption><small>FIELD IMAGE / 01</small>視界が変わり始めたら、雨雲・雷・避難先の情報を一度まとめて確認する。</figcaption></figure><div class="photo-stack"><figure class="photo"><img src="/manus-storage/rainrise-cloud-study_1cbda185.jpg" alt="市街地の上に育つ積乱雲の雲塔" /><figcaption><small>FIELD IMAGE / 02</small>雲が縦に大きく育つとき、空気は強く動いている。</figcaption></figure><figure class="photo"><img src="/manus-storage/rainrise-observation-platform_5bc1394b.jpg" alt="局地的な雨の柱を伴う都市上空の積乱雲" /><figcaption><small>FIELD IMAGE / 03</small>雨は市街地全体ではなく、一部に集中することがある。</figcaption></figure></div></div>
           </div>
-          <figure class="process-figure reveal" aria-labelledby="diagram-caption">
-            <svg viewBox="0 0 1200 600" role="img" aria-label="湿った空気の上昇、積乱雲の発達、局地的な雨の仕組みを示した断面図">
-              <defs>
-                <linearGradient id="cloud" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f9fcfb"/><stop offset="1" stop-color="#b5c8cd"/></linearGradient>
-                <linearGradient id="rainshaft" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#4e9fc2" stop-opacity=".78"/><stop offset="1" stop-color="#235f89" stop-opacity=".72"/></linearGradient>
-                <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#f3a84b"/></marker>
-                <pattern id="rainlines" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><line x1="0" y1="0" x2="0" y2="20" stroke="#e7f6f8" stroke-width="5" opacity=".66"/></pattern>
-              </defs>
-              <path d="M0 470 C130 443 210 482 318 456 C440 425 510 480 620 448 C720 420 845 472 990 444 C1080 426 1140 444 1200 425 L1200 600 L0 600Z" fill="#9fb99a"/>
-              <path d="M0 520 C130 499 225 534 350 514 C480 493 620 537 770 510 C930 482 1050 530 1200 500 L1200 600 L0 600Z" fill="#6d9677" opacity=".52"/>
-              <path d="M136 480 C162 407 153 344 223 284 C298 220 336 197 379 143 C421 91 486 70 532 107 C568 53 649 50 687 114 C735 66 805 99 805 174 C884 158 941 214 921 281 C1006 286 1037 364 972 410 C1003 467 930 500 869 470 L230 490 C181 515 124 523 136 480Z" fill="url(#cloud)" stroke="#8ba6b0" stroke-width="3"/>
-              <path d="M667 318 C718 280 836 288 904 336 C953 370 979 414 982 510 L700 510 C713 442 658 396 667 318Z" fill="url(#rainshaft)" opacity=".82"/>
-              <path d="M687 334 C748 306 872 317 936 357 C970 387 979 431 981 514 L712 514 C727 453 680 394 687 334Z" fill="url(#rainlines)" opacity=".85"/>
-              <path d="M380 510 C372 436 385 382 431 320 C454 287 482 258 512 228" fill="none" stroke="#f3a84b" stroke-width="15" stroke-linecap="round" marker-end="url(#arrow)"/>
-              <path d="M455 510 C444 432 469 380 520 337 C549 312 572 276 587 236" fill="none" stroke="#f7c675" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
-              <path d="M800 134 C840 111 894 119 923 150" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".85"/>
-              <g fill="#fff" opacity=".94"><circle cx="463" cy="245" r="6"/><circle cx="486" cy="217" r="4"/><circle cx="532" cy="191" r="7"/><circle cx="567" cy="162" r="5"/><circle cx="610" cy="140" r="5"/></g>
-              <g font-family="IBM Plex Mono, monospace" font-size="17" fill="#102b42"><text x="75" y="100">WARM / HUMID AIR</text><text x="497" y="75">CONDENSATION</text><text x="887" y="260">RAIN CELL</text></g>
-              <g stroke="#102b42" stroke-width="1.5" opacity=".7"><path d="M225 105 H355 L407 276" fill="none"/><path d="M577 79 V127"/><path d="M1000 266 H914"/></g>
-            </svg>
-            <div class="process-notes">
-              <div class="process-note"><span class="num">01 / FUEL</span><strong>湿った空気がたまる</strong><span>暖かい空気は、より多くの水蒸気を含むことができます。</span></div>
-              <div class="process-note"><span class="num">02 / LIFT</span><strong>急上昇して、冷える</strong><span>上昇するほど空気は冷え、水蒸気が雲粒に変わって雲が発達します。</span></div>
-              <div class="process-note"><span class="num">03 / RELEASE</span><strong>狭い範囲に、一気に降る</strong><span>発達した一つの積乱雲が、短時間に強い雨をもたらします。</span></div>
-            </div>
-          </figure>
-          <figcaption id="diagram-caption" class="figure-caption">FIG. 01 — 本サイトの説明用に作成した模式図。実際の雲の形状・規模・位置を表すものではありません。</figcaption>
-        </div>
-      </section>
+        </section>
 
-      <section class="section comparison" aria-labelledby="compare-title">
-        <div class="section-inner">
-          <div class="compare-layout">
-            <div class="compare-aside reveal"><div class="section-label">DISTINCTION / 03</div><h2 id="compare-title">同じ「大雨」でも、<br />空のつくりは<br />同じではない。</h2><p class="section-intro">目の前の急な雨と、数時間続く広い範囲の雨。言葉を分けると、確認すべき情報のスケールも見えてきます。</p></div>
-            <div class="reveal">
-              <table>
-                <tbody>
-                  <tr><th scope="row">局地的大雨</th><td><span class="outcome">数十分・狭い範囲・単独の積乱雲。</span><br />気象庁は、急に強く降り、数十分の短時間に狭い範囲で数十mm程度の雨をもたらすものと説明しています。<a class="cite" href="#source-1" aria-label="出典1">[1]</a></td></tr>
-                  <tr><th scope="row">集中豪雨</th><td><span class="outcome">数時間・同じような場所・積乱雲が繰り返す。</span><br />積乱雲が同じ場所で次々に発生・発達を繰り返し、100mmから数百mmの雨量をもたらす現象です。<a class="cite" href="#source-1" aria-label="出典1">[1]</a></td></tr>
-                  <tr><th scope="row">線状降水帯</th><td><span class="outcome">組織化した積乱雲群が、数時間ほぼ同じ場所を通過・停滞。</span><br />気象庁の用語では、長さ50〜300km程度、幅20〜50km程度の線状の強い降水域を指します。<a class="cite" href="#source-1" aria-label="出典1">[1]</a></td></tr>
-                </tbody>
-              </table>
-              <p class="mono-note" style="margin-top:2.5rem">局地的な大雨そのものを、ある特定の一因だけで説明することはできません。地形、海風、前線、都市の熱など、複数の条件が重なります。</p>
-            </div>
+        <section id="mechanism" class="chapter diagram-chapter" data-chapter="しくみ：4段階の断面図" aria-labelledby="mechanism-title">
+          <div class="chapter-inner"><div class="diagram-header"><div class="reveal"><div class="chapter-label">MECHANISM / 03</div><h2 id="mechanism-title">雨が降る前に、<br />空気はすでに<br />動き始めています。</h2></div><p class="intro reveal">積乱雲は、湿った空気が上昇して冷え、雲粒へ変わることで発達します。難しい言葉を増やさず、地表から雨が落ちるまでを4段階の大きな矢印で追います。</p></div>
+            <figure class="flow-figure reveal" aria-labelledby="flow-caption"><svg viewBox="0 0 1200 485" role="img" aria-label="局地的大雨が生まれる四段階を示す、地表から積乱雲までの簡略断面図"><defs><linearGradient id="simpleCloud" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#b5ccd1"/></linearGradient><linearGradient id="simpleRain" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#62b3cf"/><stop offset="1" stop-color="#1c5b83"/></linearGradient><marker id="wideArrow" markerWidth="14" markerHeight="14" refX="10" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 Z" fill="#f3a84b"/></marker><pattern id="drops" width="20" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><line x1="2" y1="0" x2="2" y2="15" stroke="#e8fbff" stroke-width="5" stroke-linecap="round"/></pattern></defs><g stroke="#5a7a87" stroke-width="1" opacity=".45"><path d="M0 74H1200"/><path d="M0 162H1200"/><path d="M0 250H1200"/></g><path d="M0 372 C145 345 260 384 405 358 C560 334 690 386 828 359 C962 334 1087 367 1200 343 L1200 485 L0 485Z" fill="#86a978"/><path d="M0 411 C145 389 267 424 406 403 C556 378 686 429 834 401 C978 373 1092 411 1200 389 L1200 485 L0 485Z" fill="#628c70" opacity=".62"/><g font-family="IBM Plex Mono,monospace" font-size="17" fill="#294e61"><text x="62" y="62">01 / SURFACE HEAT</text><text x="349" y="62">02 / HUMID AIR</text><text x="643" y="62">03 / CLOUD GROWTH</text><text x="929" y="62">04 / RAIN CELL</text></g><path d="M132 363 C115 326 126 296 153 279 C180 263 196 284 210 265 C230 240 266 250 275 281 C286 306 264 321 250 341 C220 364 175 373 132 363Z" fill="#f3a84b" opacity=".78"/><path d="M324 390 C339 335 374 286 426 244" fill="none" stroke="#f3a84b" stroke-width="22" stroke-linecap="round" marker-end="url(#wideArrow)"/><path d="M436 386 C449 331 490 286 538 248" fill="none" stroke="#ffd28f" stroke-width="10" stroke-linecap="round" marker-end="url(#wideArrow)"/><g fill="url(#simpleCloud)" stroke="#83a6b0" stroke-width="3"><path d="M542 344 C505 318 514 270 555 252 C548 214 577 186 616 190 C633 144 688 139 714 180 C755 141 814 166 812 222 C859 212 889 249 875 287 C915 301 918 340 882 359 C866 371 823 373 789 363 L578 365 C562 363 551 355 542 344Z"/></g><path d="M859 262 C900 242 997 252 1038 299 C1062 329 1068 366 1072 419 L878 419 C880 361 843 313 859 262Z" fill="url(#simpleRain)"/><path d="M876 281 C925 260 1015 272 1046 311 C1063 337 1068 372 1072 426 L893 426 C896 367 862 320 876 281Z" fill="url(#drops)"/><g fill="#fff"><circle cx="622" cy="211" r="7"/><circle cx="650" cy="188" r="5"/><circle cx="680" cy="170" r="6"/><circle cx="718" cy="190" r="4"/></g><g fill="#294e61" font-family="Noto Sans JP,sans-serif" font-size="18" font-weight="700"><text x="91" y="432">地面が温まる</text><text x="350" y="432">湿った空気が上昇</text><text x="626" y="432">雲が急速に成長</text><text x="912" y="452">狭い範囲に強い雨</text></g></svg><div class="flow-steps"><div class="flow-step"><span class="step-num">01 / HEAT</span><strong>地表が温まる</strong><p>夏の日中は地面付近の空気が暖まり、動きやすくなります。</p></div><div class="flow-step"><span class="step-num">02 / MOISTURE</span><strong>湿った空気が上がる</strong><p>暖かい空気は水蒸気を多く含み、上向きの流れの材料になります。</p></div><div class="flow-step"><span class="step-num">03 / CLOUD</span><strong>上で冷えて、雲になる</strong><p>上昇した空気は冷え、水蒸気が雲粒に変わって雲が大きくなります。</p></div><div class="flow-step"><span class="step-num">04 / RAIN</span><strong>雨粒が一気に育つ</strong><p>発達した一つの積乱雲が、短時間に強い雨を落とすことがあります。</p></div></div></figure><p id="flow-caption" class="caption">FIG. 01 — 本サイトの説明用に制作した概念図。雲の実際の形・規模・位置を表すものではありません。</p>
           </div>
-          <div class="image-pair reveal">
-            <figure class="image-card"><img src="/manus-storage/cumulonimbus-detail_ad4a5e7c.jpg" alt="夏の空に発達する積乱雲を見上げたオリジナルイメージ" /><figcaption class="image-caption"><small>ORIGINAL VISUAL / CLOUD STRUCTURE</small>大きく立ち上がる雲は、強い上昇気流が続いている目安の一つ。</figcaption></figure>
-            <figure class="image-card"><img src="/manus-storage/wet-city-window_e96f7091.jpg" alt="雨粒がついた窓越しに見る急変前の街を表したオリジナルイメージ" /><figcaption class="image-caption"><small>ORIGINAL VISUAL / URBAN RAIN</small>空の様子が急に変わる日は、出発前に防災情報も確認を。</figcaption></figure>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section watch" aria-labelledby="watch-title">
-        <div class="section-inner">
-          <div class="watch-layout">
-            <div class="reveal"><div class="section-label">FIELD SIGNS / 04</div><h2 id="watch-title">空は、<br />小さな変化から<br />知らせてくる。</h2><p class="section-intro">発達した積乱雲は、急な大雨だけでなく、雷・ひょう・竜巻などを伴うことがあります。気象庁は、気象情報をこまめに確認し、積乱雲が近づくサインを見逃さないことを呼びかけています。<a class="cite" href="#source-3" aria-label="出典3">[3]</a></p></div>
-            <div class="watch-list reveal">
-              <article class="watch-item"><strong>01 / SKY</strong><div><h3>空が急に暗くなる</h3><p>空の一部で背の高い雲が育ち、周辺の明るさが変わることがあります。</p></div></article>
-              <article class="watch-item"><strong>02 / SOUND</strong><div><h3>遠くで雷の音がする</h3><p>屋外では、安全な建物の中へ移動する判断が必要になります。</p></div></article>
-              <article class="watch-item"><strong>03 / WIND</strong><div><h3>冷たい風が急に吹く</h3><p>積乱雲から流れ出す冷たい空気が、風の変化として感じられることがあります。</p></div></article>
-            </div>
-          </div>
-          <aside class="warning-box reveal" aria-label="雨天時の注意"><h3>地下・アンダーパス・水辺に近づかない。</h3><p>短時間の強い雨では、低い場所に水が集まり、河川や水路が急に増水することがあります。空の変化を見たら、「今いる場所から離れる」ことも選択肢に入れてください。</p></aside>
-        </div>
-      </section>
+        <section id="data" class="chapter data-chapter" data-chapter="データ：観測値を比べる" aria-labelledby="data-title">
+          <div class="chapter-inner"><div class="data-layout"><aside class="data-aside reveal"><div class="chapter-label">DATA / 04</div><h2 id="data-title">増え方を、<br /><span class="amber">同じ尺度</span>で<br />比べてみる。</h2><p class="intro">「強い雨ほど増加率が高い」という評価を、最初の10年間と最近10年間の平均年間発生回数で比較します。棒に触れる・重ねると、項目ごとの値と比較期間を確認できます。</p><p class="mono-note">値は全国アメダス1,300地点当たりへの換算値。各地域や各年の雨量そのものではありません。</p></aside><div class="reveal"><div class="chart-panel"><div class="chart-caption"><div><strong>FIG. 02 / OBSERVED CHANGE</strong><p>1976–1985年と2015–2024年の平均年間発生回数を比較。</p></div><span class="chart-status"><i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i></span></div><div id="observed-chart" class="chart-host" role="img" aria-label="短時間強雨の発生回数を1976年から1985年と2015年から2024年で比較する棒グラフ"></div></div><div class="table-wrap"><table aria-label="極端な大雨の発生回数比較表"><thead><tr><th>指標</th><th>1976–1985</th><th>2015–2024</th><th>倍率</th></tr></thead><tbody><tr><th>1時間 50mm以上</th><td>約226回</td><td><strong>約334回</strong></td><td>約1.5倍</td></tr><tr><th>1時間 80mm以上</th><td>約14回</td><td><strong>約24回</strong></td><td>約1.7倍</td></tr><tr><th>1時間 100mm以上</th><td>約2.2回</td><td><strong>約4.0回</strong></td><td>約1.8倍</td></tr><tr><th>3時間 100mm以上</th><td>約155回</td><td><strong>約248回</strong></td><td>約1.6倍</td></tr><tr><th>3時間 150mm以上</th><td>約19回</td><td><strong>約33回</strong></td><td>約1.8倍</td></tr><tr><th>3時間 200mm以上</th><td>約2.8回</td><td><strong>約5.6回</strong></td><td>約2.0倍</td></tr></tbody></table></div><p class="table-note">出典：気象庁「日本の気候変動2025」表5-1.1。すべて年間・全国アメダス1,300地点当たりに換算した平均発生回数。<a class="cite" href="#source-2" aria-label="出典2">[2]</a></p></div></div></div>
+        </section>
 
-      <section id="prepare" class="section action" aria-labelledby="action-title">
-        <div class="section-inner">
-          <div class="action-head">
-            <div class="reveal"><div class="section-label">PREPARE / 05</div><h2 id="action-title">警報を待たず、<br /><span class="amber">空と通知</span>を確認する。</h2></div>
-            <p class="section-intro reveal">大雨は局地性が強く、状況が急に変わります。日頃から自宅や職場の周辺のリスクを知り、情報と現在地を結びつけて判断することが大切です。</p>
+        <section id="future" class="chapter future" data-chapter="これから：将来予測の読み方" aria-labelledby="future-title">
+          <div class="chapter-inner"><div class="chapter-label reveal">OUTLOOK / 05</div><h2 id="future-title" class="reveal">将来の数字は、<br />不安を数えるためではなく、<br /><span class="amber">備えを早める</span>ためにある。</h2><p class="intro reveal">気象庁の予測では、極端な大雨の頻度は全国平均で増えると見込まれています。一方で、都道府県のような小さな空間単位では予測の不確実性が大きくなります。ここでは全国平均の見通しとして読み、日常の判断は地域の最新情報に戻します。<a class="cite" href="#source-2" aria-label="出典2">[2]</a></p>
+            <div class="future-layout reveal"><article class="scenario"><span class="scenario-code">LOWER WARMING / RCP2.6</span><h3>2°C上昇の世界</h3><p>20世紀末と比べ、1時間50mm以上・3時間100mm以上の年間発生回数は、全国平均でどちらも約1.8倍に増加すると予測されています。年最大日降水量は約12%（約13mm）増加です。</p></article><article class="scenario alt"><span class="scenario-code">HIGHER WARMING / RCP8.5</span><h3>4°C上昇の世界</h3><p>同じ二つの強雨指標は約3.0倍、年最大日降水量は約27%（約28mm）増加と予測されています。雨の降らない日も約9.1日増加する見通しです。</p></article></div>
+            <div class="chart-panel reveal"><div class="chart-caption"><div><strong>FIG. 03 / FUTURE FREQUENCY</strong><p>20世紀末（1980–1999年平均）に対する21世紀末（2076–2095年平均）の全国平均予測。</p></div><span class="chart-status"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i></span></div><div id="future-chart" class="chart-host" role="img" aria-label="2度上昇と4度上昇のシナリオにおける強い雨の頻度増加予測を示す棒グラフ"></div></div>
+            <div class="table-wrap reveal"><table aria-label="将来の雨の降り方の変化予測表"><thead><tr><th>全国平均の予測</th><th>2°C上昇</th><th>4°C上昇</th></tr></thead><tbody><tr><th>1時間50mm以上の年間発生回数</th><td>約1.8倍</td><td><strong>約3.0倍</strong></td></tr><tr><th>3時間100mm以上の年間発生回数</th><td>約1.8倍</td><td><strong>約3.0倍</strong></td></tr><tr><th>日降水量100mm以上の年間日数</th><td>約1.2倍</td><td><strong>約1.4倍</strong></td></tr><tr><th>年最大日降水量</th><td>約12%（約13mm）増加</td><td><strong>約27%（約28mm）増加</strong></td></tr><tr><th>日降水量1mm未満の日数</th><td>明確な変化傾向なし</td><td><strong>約9.1日増加</strong></td></tr></tbody></table></div><p class="table-note reveal">出典：気象庁「日本の気候変動2025」表5-2.1。温室効果ガス排出シナリオに基づく全国平均の予測であり、個別地点の将来の雨を示すものではありません。<a class="cite" href="#source-2" aria-label="出典2">[2]</a></p>
           </div>
-          <div class="action-grid reveal">
-            <article class="action-card"><span class="action-number">01 / BEFORE</span><h3>出かける前に、<br />雨雲とリスクを。</h3><p>予報だけでなく、雨雲の動きや警報・注意報を確認。大雨の可能性がある日は、行程に余裕を持たせます。</p><a class="action-link" href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer"><i class="bi bi-cloud-rain-heavy" aria-hidden="true"></i>雨雲の動きを見る <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article>
-            <article class="action-card"><span class="action-number">02 / DURING</span><h3>積乱雲のサインで、<br />早めに屋内へ。</h3><p>空が暗くなる、雷鳴が聞こえる、冷たい風が吹く。そんな変化を感じたら、安全な建物の中へ移動します。</p><a class="action-link" href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>気象庁の注意点を読む <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article>
-            <article class="action-card"><span class="action-number">03 / RISK</span><h3>危険な場所では、<br />自分で避難を判断。</h3><p>キキクルや河川の水位情報も使い、避難指示が出ていなくても、危険な場所から離れる判断をします。</p><a class="action-link" href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer"><i class="bi bi-shield-check" aria-hidden="true"></i>キキクルを開く <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="hazard" class="section hazard" aria-labelledby="hazard-title">
-        <div class="section-inner">
-          <div class="section-label reveal">LOCAL RISK / 06</div>
-          <h2 id="hazard-title" class="reveal">住んでいる地域の<br /><span class="amber">水害・土砂災害</span>リスクを、<br />地図で確かめる。</h2>
-          <p class="section-intro reveal">大雨への備えは、雨が降る前に「自宅・職場・よく通る道」の周辺にどのようなリスクがあるかを知るところから始まります。都道府県を選ぶと、選択した地域を中心に国の重ねるハザードマップを開きます。</p>
-          <div class="hazard-grid reveal">
-            <div class="hazard-intro"><i class="bi bi-map-fill hazard-icon" aria-hidden="true"></i><h3>自治体の公式マップを、まとめて探す。</h3><p>「わがまちハザードマップ」では、地域や災害種別から各市町村が公開する公式ハザードマップへのリンクを確認できます。</p><a class="hazard-portal" href="https://disaportal.gsi.go.jp/hazardmap/" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>わがまちハザードマップを開く</a></div>
-            <div class="hazard-picker"><label for="prefecture-map"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>都道府県を選択</label><select id="prefecture-map" name="prefecture-map"><option value="">都道府県を選んでください</option><option value="43.0621,141.3544">北海道</option><option value="40.8222,140.7474">青森県</option><option value="39.7036,141.1527">岩手県</option><option value="38.2682,140.8694">宮城県</option><option value="39.7186,140.1024">秋田県</option><option value="38.2404,140.3633">山形県</option><option value="37.7608,140.4747">福島県</option><option value="36.3659,140.4712">茨城県</option><option value="36.5658,139.8836">栃木県</option><option value="36.3911,139.0608">群馬県</option><option value="35.8569,139.6489">埼玉県</option><option value="35.6073,140.1063">千葉県</option><option value="35.6762,139.6503">東京都</option><option value="35.4478,139.6425">神奈川県</option><option value="37.9026,139.0236">新潟県</option><option value="36.6953,137.2113">富山県</option><option value="36.5613,136.6562">石川県</option><option value="36.0652,136.2216">福井県</option><option value="35.6639,138.5684">山梨県</option><option value="36.6486,138.1948">長野県</option><option value="35.3912,136.7223">岐阜県</option><option value="34.9769,138.3831">静岡県</option><option value="35.1815,136.9066">愛知県</option><option value="34.7303,136.5086">三重県</option><option value="35.0045,135.8686">滋賀県</option><option value="35.0116,135.7681">京都府</option><option value="34.6937,135.5023">大阪府</option><option value="34.6901,135.1955">兵庫県</option><option value="34.6851,135.8050">奈良県</option><option value="34.2260,135.1675">和歌山県</option><option value="35.5011,134.2351">鳥取県</option><option value="35.4723,133.0505">島根県</option><option value="34.6618,133.9350">岡山県</option><option value="34.3853,132.4553">広島県</option><option value="34.1859,131.4714">山口県</option><option value="34.0658,134.5593">徳島県</option><option value="34.3401,134.0434">香川県</option><option value="33.8417,132.7661">愛媛県</option><option value="33.5597,133.5311">高知県</option><option value="33.5904,130.4017">福岡県</option><option value="33.2494,130.2988">佐賀県</option><option value="32.7503,129.8777">長崎県</option><option value="32.8031,130.7079">熊本県</option><option value="33.2382,131.6126">大分県</option><option value="31.9111,131.4239">宮崎県</option><option value="31.5602,130.5581">鹿児島県</option><option value="26.2124,127.6809">沖縄県</option></select><a id="hazard-open" class="hazard-open is-disabled" href="https://disaportal.gsi.go.jp/maps/" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1"><i class="bi bi-map" aria-hidden="true"></i><span id="hazard-open-label">地域を選択してください</span><i class="bi bi-arrow-up-right" aria-hidden="true"></i></a><p id="hazard-status" class="hazard-status" aria-live="polite">選択後、洪水・土砂災害の情報を重ねた地図を新しいタブで開きます。</p></div>
+        <section id="prepare" class="chapter prepare" data-chapter="備える：今の判断" aria-labelledby="prepare-title">
+          <div class="chapter-inner"><div class="chapter-label reveal">PREPARE / 06</div><h2 id="prepare-title" class="reveal">予報を見たら、<br />次は<span style="color:#a9dcf0">自分の場所</span>に<br />置き換える。</h2><p class="intro reveal">局地的な強い雨では、「今いる場所」と「そこから安全な場所へ移れるか」が重要です。警報を待つだけでなく、空の変化、雨雲・リスク情報、危険な地形を合わせて確認します。<a class="cite" href="#source-3" aria-label="出典3">[3]</a></p>
+            <div class="action-grid reveal"><article class="action"><span class="action-code">01 / BEFORE</span><h3>出かける前に、雨雲とリスクを。</h3><p>予報だけでなく、雨雲の動き、警報・注意報、通る場所の地形を確認します。行程に余裕を持たせることも備えです。</p><a href="https://www.jma.go.jp/bosai/nowc/" target="_blank" rel="noopener noreferrer"><i class="bi bi-cloud-rain-heavy" aria-hidden="true"></i>雨雲の動きを見る <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article><article class="action"><span class="action-code">02 / DURING</span><h3>積乱雲のサインで、早めに屋内へ。</h3><p>空が暗くなる、雷鳴が聞こえる、冷たい風が吹く。変化を感じたら、丈夫な建物の中へ移動します。</p><a href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer"><i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>気象庁の注意点を読む <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article><article class="action"><span class="action-code">03 / RISK</span><h3>地下・水辺・低い道から離れる。</h3><p>アンダーパス、川や用水路の近く、低い道路は急な増水に注意が必要です。危険を感じたら、引き返す判断を優先します。</p><a href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer"><i class="bi bi-shield-check" aria-hidden="true"></i>キキクルを開く <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a></article></div>
+            <div class="safe-photo reveal"><figure><img src="/manus-storage/rainrise-safe-route_e265b9f1.jpg" alt="雨が降り始めた都市の歩道と地下道入口を安全な位置から見た様子" /><figcaption>FIELD IMAGE / 04 — 早めに安全な経路を選び、低い場所へ近づかない。</figcaption></figure><p class="safe-quote">「あと少しだから」は、<br />雨の前では判断材料にならない。<br />危険な地形から離れる判断を、<br /><span style="color:var(--amber)">雨が強まる前</span>に。</p></div>
           </div>
-          <p class="hazard-note reveal"><i class="bi bi-info-circle" aria-hidden="true"></i> 表示される地図は地域の中心付近から始まります。住所検索で自宅や通勤・通学経路を確認し、避難場所・避難経路は必ずお住まいの市区町村の公式情報でも確認してください。<a class="cite" href="#source-5" aria-label="出典5">[5]</a></p>
-        </div>
-      </section>
+        </section>
 
-      <section class="sources" aria-labelledby="sources-title">
-        <div class="section-inner">
-          <div class="sources-grid">
-            <div><div class="section-label">SOURCES / COPYRIGHT</div><h2 id="sources-title">根拠と、<br />つくったもの。</h2></div>
-            <div>
-              <ol class="source-list">
-                <li id="source-1"><a href="https://www.jma.go.jp/jma/kishou/know/yougo_hp/kousui.html" target="_blank" rel="noopener noreferrer">気象庁「降水（天気予報等で用いる用語）」</a>。局地的大雨、集中豪雨、線状降水帯などの定義を参照。</li>
-                <li id="source-2"><a href="https://www.data.jma.go.jp/cpdinfo/ccj/2025/html_honpen/cc2025_honpen_5.html" target="_blank" rel="noopener noreferrer">気象庁「日本の気候変動2025 — 第5章 降水」</a>。極端な大雨の観測傾向、数値、水蒸気量との関係を参照。</li>
-                <li id="source-3"><a href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer">気象庁「急な大雨や雷・竜巻から身を守るために」</a>。積乱雲に伴う現象と行動の説明を参照。</li>
-                <li id="source-4"><a href="https://www.jma.go.jp/jma/kishou/know/bosai/alertlevel.html" target="_blank" rel="noopener noreferrer">気象庁「防災気象情報と警戒レベルとの対応について」</a>。キキクルと避難行動の説明を参照。</li>
-                <li id="source-5"><a href="https://disaportal.gsi.go.jp/" target="_blank" rel="noopener noreferrer">国土交通省・国土地理院「ハザードマップポータルサイト」</a>。重ねるハザードマップと、わがまちハザードマップへの導線を参照。</li>
-              </ol>
-              <p class="copyright-note">掲載の模式図（FIG. 01）、ブランドマーク、装飾SVG、ヒーローおよび本文の画像は、このサイトのために制作したオリジナル素材です。気象庁等の図表・写真・地図の転載は行っていません。UIアイコンは<a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener noreferrer">Bootstrap Icons v1.13.1</a>（MIT License）を使用しています。外部リンク先の著作権は各権利者に帰属します。</p>
-            </div>
-          </div>
-        </div>
-      </section>
+        <section id="hazard" class="chapter hazard" data-chapter="地域：ハザードマップ" aria-labelledby="hazard-title">
+          <div class="chapter-inner"><div class="chapter-label reveal">LOCAL RISK / 07</div><h2 id="hazard-title" class="reveal">住んでいる地域の<br /><span class="amber">水害・土砂災害</span>リスクを、<br />地図で確かめる。</h2><p class="intro reveal">大雨への備えは、雨が降る前に「自宅・職場・よく通る道」の周辺にどのようなリスクがあるかを知るところから始まります。都道府県を選ぶと、選択した地域を中心に国の重ねるハザードマップを開きます。</p><div class="hazard-grid reveal"><div class="hazard-intro"><i class="bi bi-map-fill" aria-hidden="true"></i><h3>自治体の公式マップを、まとめて探す。</h3><p>「わがまちハザードマップ」では、地域や災害種別から各市町村が公開する公式ハザードマップへのリンクを確認できます。</p><a href="https://disaportal.gsi.go.jp/hazardmap/" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>わがまちハザードマップを開く</a></div><div class="hazard-picker"><label for="prefecture-map"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i>都道府県を選択</label><select id="prefecture-map" name="prefecture-map"><option value="">都道府県を選んでください</option><option value="43.0621,141.3544">北海道</option><option value="40.8222,140.7474">青森県</option><option value="39.7036,141.1527">岩手県</option><option value="38.2682,140.8694">宮城県</option><option value="39.7186,140.1024">秋田県</option><option value="38.2404,140.3633">山形県</option><option value="37.7608,140.4747">福島県</option><option value="36.3659,140.4712">茨城県</option><option value="36.5658,139.8836">栃木県</option><option value="36.3911,139.0608">群馬県</option><option value="35.8569,139.6489">埼玉県</option><option value="35.6073,140.1063">千葉県</option><option value="35.6762,139.6503">東京都</option><option value="35.4478,139.6425">神奈川県</option><option value="37.9026,139.0236">新潟県</option><option value="36.6953,137.2113">富山県</option><option value="36.5613,136.6562">石川県</option><option value="36.0652,136.2216">福井県</option><option value="35.6639,138.5684">山梨県</option><option value="36.6486,138.1948">長野県</option><option value="35.3912,136.7223">岐阜県</option><option value="34.9769,138.3831">静岡県</option><option value="35.1815,136.9066">愛知県</option><option value="34.7303,136.5086">三重県</option><option value="35.0045,135.8686">滋賀県</option><option value="35.0116,135.7681">京都府</option><option value="34.6937,135.5023">大阪府</option><option value="34.6901,135.1955">兵庫県</option><option value="34.6851,135.8050">奈良県</option><option value="34.2260,135.1675">和歌山県</option><option value="35.5011,134.2351">鳥取県</option><option value="35.4723,133.0505">島根県</option><option value="34.6618,133.9350">岡山県</option><option value="34.3853,132.4553">広島県</option><option value="34.1859,131.4714">山口県</option><option value="34.0658,134.5593">徳島県</option><option value="34.3401,134.0434">香川県</option><option value="33.8417,132.7661">愛媛県</option><option value="33.5597,133.5311">高知県</option><option value="33.5904,130.4017">福岡県</option><option value="33.2494,130.2988">佐賀県</option><option value="32.7503,129.8777">長崎県</option><option value="32.8031,130.7079">熊本県</option><option value="33.2382,131.6126">大分県</option><option value="31.9111,131.4239">宮崎県</option><option value="31.5602,130.5581">鹿児島県</option><option value="26.2124,127.6809">沖縄県</option></select><a id="hazard-open" class="hazard-open is-disabled" href="https://disaportal.gsi.go.jp/maps/" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1"><i class="bi bi-map" aria-hidden="true"></i><span id="hazard-open-label">地域を選択してください</span><i class="bi bi-arrow-up-right" aria-hidden="true"></i></a><p id="hazard-status" class="hazard-status" aria-live="polite">選択後、洪水・土砂災害の情報を重ねた地図を新しいタブで開きます。</p></div></div><p class="hazard-note reveal"><i class="bi bi-info-circle" aria-hidden="true"></i> 表示される地図は地域の中心付近から始まります。住所検索で自宅や通勤・通学経路を確認し、避難場所・避難経路は必ずお住まいの市区町村の公式情報でも確認してください。<a class="cite" href="#source-5" aria-label="出典5">[5]</a></p></div>
+        </section>
+      </article>
     </main>
 
-    <footer class="site-footer"><a class="footer-brand" href="#top"><img src="/manus-storage/rainrise-mark_e0630605.png" alt="" />RAINRISE</a><span>WEATHER FIELD NOTE · INFORMATIONAL USE</span><span>© 2026</span></footer>
+    <aside class="rain-tracker" aria-label="読了の進捗"><div class="gauge" aria-hidden="true"><div id="gauge-fill" class="gauge-fill"></div></div><div class="tracker-copy"><span class="tracker-code">RAIN PATH / LIVE</span><strong id="tracker-percent" class="tracker-percent">0%</strong><span id="tracker-time" class="tracker-time">残り — 分</span><span id="tracker-location" class="tracker-location">導入</span></div></aside>
+
+    <section class="sources" aria-labelledby="sources-title"><div class="chapter-inner"><div class="sources-grid"><div><div class="chapter-label">SOURCES / NOTES</div><h2 id="sources-title">根拠をたどる。</h2></div><div><ol class="source-list"><li id="source-1"><a href="https://www.jma.go.jp/jma/kishou/know/yougo_hp/kousui.html" target="_blank" rel="noopener noreferrer">気象庁「降水（天気予報等で用いる用語）」</a>。局地的大雨、集中豪雨、線状降水帯の用語説明を参照。</li><li id="source-2"><a href="https://www.data.jma.go.jp/cpdinfo/ccj/2025/html_honpen/cc2025_honpen_5.html" target="_blank" rel="noopener noreferrer">気象庁「日本の気候変動2025 — 第5章 降水」</a>。観測比較、将来予測、表5-1.1および表5-2.1を参照。</li><li id="source-3"><a href="https://www.jma.go.jp/jma/kishou/know/tenki_chuui/tenki_chuui_p1.html" target="_blank" rel="noopener noreferrer">気象庁「急な大雨や雷・竜巻から身を守るために」</a>。積乱雲接近時の安全行動を参照。</li><li id="source-4"><a href="https://www.jma.go.jp/bosai/risk/" target="_blank" rel="noopener noreferrer">気象庁「キキクル（危険度分布）」</a>。大雨時に確認する防災気象情報への導線。</li><li id="source-5"><a href="https://disaportal.gsi.go.jp/" target="_blank" rel="noopener noreferrer">国土交通省・国土地理院「ハザードマップポータルサイト」</a>。重ねるハザードマップと、わがまちハザードマップへの導線を参照。</li><li id="source-6"><a href="https://echarts.apache.org/" target="_blank" rel="noopener noreferrer">Apache ECharts</a>。本ページのインタラクティブな棒グラフにECharts v6.1.0を使用。</li></ol><p class="license-note">掲載の模式図（FIG. 01）、サイト固有の装飾SVG、ブランドマーク、および観測イメージは、このサイトのために制作したオリジナル素材です。気象庁・国土地理院等の図表・写真・地図を転載していません。UIアイコンは<a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener noreferrer">Bootstrap Icons v1.13.1</a>（MIT License）、グラフは<a href="https://echarts.apache.org/" target="_blank" rel="noopener noreferrer">Apache ECharts v6.1.0</a>（Apache License 2.0）を使用しています。外部リンク先の著作権は各権利者に帰属します。</p></div></div></div></section>
+    <footer class="footer"><a href="#top"><img src="/manus-storage/rainrise-mark_e0630605.png" alt="" />RAINRISE / FIELD NOTE</a><span>空の変化を、次の判断につなげる。</span></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@6.1.0/dist/echarts.min.js"></script>
     <script>
       (() => {
-        const progress = document.querySelector('.page-progress');
-        const nav = document.querySelector('.nav-links');
-        const toggle = document.querySelector('.nav-toggle');
-        const updateProgress = () => {
-          const max = document.documentElement.scrollHeight - window.innerHeight;
-          progress.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
-        };
-        window.addEventListener('scroll', updateProgress, { passive: true });
-        updateProgress();
-        toggle?.addEventListener('click', () => {
-          const open = nav.classList.toggle('open');
-          toggle.setAttribute('aria-expanded', String(open));
-          toggle.textContent = open ? 'CLOSE' : 'MENU';
-        });
-        nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
-          nav.classList.remove('open');
-          toggle?.setAttribute('aria-expanded', 'false');
-          if (toggle) toggle.textContent = 'MENU';
-        }));
-        const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-          if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
-        }), { threshold: .12 });
+        const $ = (selector) => document.querySelector(selector);
+        const navToggle = $('.nav-toggle');
+        const nav = $('#site-navigation');
+        navToggle?.addEventListener('click', () => { const isOpen = nav.classList.toggle('open'); navToggle.setAttribute('aria-expanded', String(isOpen)); });
+        nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => { nav.classList.remove('open'); navToggle?.setAttribute('aria-expanded', 'false'); }));
+
+        const article = $('[data-reading-content]');
+        const gaugeFill = $('#gauge-fill');
+        const trackerPercent = $('#tracker-percent');
+        const trackerTime = $('#tracker-time');
+        const trackerLocation = $('#tracker-location');
+        const readingTime = $('#hero-reading-time');
+        const characterCount = $('#hero-character-count');
+        const chapters = [...document.querySelectorAll('[data-chapter]')];
+        const characters = article ? article.textContent.replace(/\s/g, '').length : 0;
+        const totalMinutes = Math.max(5, Math.ceil(characters / 460));
+        if (readingTime) readingTime.textContent = `READING TIME ${String(totalMinutes).padStart(2, '0')}:00`;
+        if (characterCount) characterCount.textContent = `${characters.toLocaleString('ja-JP')} CHARACTERS`;
+        let ticking = false;
+        function updateRainPath() {
+          if (!article) return;
+          const rect = article.getBoundingClientRect();
+          const percent = Math.max(0, Math.min(100, ((window.innerHeight - rect.top) / rect.height) * 100));
+          const remaining = Math.max(0, Math.ceil(totalMinutes * (1 - percent / 100)));
+          const current = chapters.find((chapter) => chapter.getBoundingClientRect().top > window.innerHeight * .28) || chapters[chapters.length - 1];
+          if (gaugeFill) gaugeFill.style.height = `${percent}%`;
+          if (trackerPercent) trackerPercent.textContent = `${Math.round(percent)}%`;
+          if (trackerTime) trackerTime.textContent = percent >= 99.5 ? 'READOUT COMPLETE' : `残り 約${Math.max(1, remaining)}分`;
+          if (trackerLocation) trackerLocation.textContent = current?.dataset.chapter || '導入';
+        }
+        function onScroll() { if (ticking) return; ticking = true; window.requestAnimationFrame(() => { updateRainPath(); ticking = false; }); }
+        window.addEventListener('scroll', onScroll, { passive:true });
+        window.addEventListener('resize', updateRainPath);
+        updateRainPath();
+
+        const observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }), { threshold:.12 });
         document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-        const prefectureSelect = document.querySelector('#prefecture-map');
-        const hazardOpen = document.querySelector('#hazard-open');
-        const hazardOpenLabel = document.querySelector('#hazard-open-label');
-        const hazardStatus = document.querySelector('#hazard-status');
-        const updateHazardMap = () => {
-          const selectedOption = prefectureSelect?.options[prefectureSelect.selectedIndex];
-          const coordinates = selectedOption?.value;
-          if (!coordinates) {
-            hazardOpen?.classList.add('is-disabled');
-            hazardOpen?.setAttribute('aria-disabled', 'true');
-            hazardOpen?.setAttribute('tabindex', '-1');
-            if (hazardOpenLabel) hazardOpenLabel.textContent = '地域を選択してください';
-            if (hazardStatus) hazardStatus.textContent = '選択後、洪水・土砂災害の情報を重ねた地図を新しいタブで開きます。';
-            return;
-          }
-          const [latitude, longitude] = coordinates.split(',');
-          const parameters = new URLSearchParams({ base: 'std', ll: `${latitude},${longitude}`, z: '10', ls: 'flood_list,0.8|landslide,0.8', disp: '111' });
-          hazardOpen.href = `https://disaportal.gsi.go.jp/maps/index.html?${parameters.toString()}`;
-          hazardOpen.classList.remove('is-disabled');
-          hazardOpen.setAttribute('aria-disabled', 'false');
-          hazardOpen.setAttribute('tabindex', '0');
-          if (hazardOpenLabel) hazardOpenLabel.textContent = `${selectedOption.text}の地図を開く`;
-          if (hazardStatus) hazardStatus.textContent = `${selectedOption.text}の中心付近に、洪水・土砂災害情報を重ねた地図を開きます。`;
-        };
-        prefectureSelect?.addEventListener('change', updateHazardMap);
+
+        const select = $('#prefecture-map'); const hazardLink = $('#hazard-open'); const hazardLabel = $('#hazard-open-label'); const hazardStatus = $('#hazard-status');
+        function updateHazardMap() { const option = select?.options[select.selectedIndex]; if (!option?.value) { hazardLink.classList.add('is-disabled'); hazardLink.setAttribute('aria-disabled','true'); hazardLink.setAttribute('tabindex','-1'); hazardLabel.textContent = '地域を選択してください'; hazardStatus.textContent = '選択後、洪水・土砂災害の情報を重ねた地図を新しいタブで開きます。'; return; } const [lat,lng] = option.value.split(','); const params = new URLSearchParams({ base:'std', ll:`${lat},${lng}`, z:'10', ls:'flood_list,0.8|landslide,0.8', disp:'111' }); hazardLink.href = `https://disaportal.gsi.go.jp/maps/index.html?${params.toString()}`; hazardLink.classList.remove('is-disabled'); hazardLink.setAttribute('aria-disabled','false'); hazardLink.setAttribute('tabindex','0'); hazardLabel.textContent = `${option.text}の地図を開く`; hazardStatus.textContent = `${option.text}の中心付近に、洪水・土砂災害情報を重ねた地図を開きます。`; }
+        select?.addEventListener('change', updateHazardMap);
+
+        if (window.echarts) {
+          const baseText = { fontFamily:"'Noto Sans JP', sans-serif", color:'#536c79' };
+          const observed = echarts.init($('#observed-chart'), null, { renderer:'svg' });
+          observed.setOption({ animationDuration:650, textStyle:baseText, grid:{ left:10, right:16, top:48, bottom:70, containLabel:true }, tooltip:{ trigger:'axis', axisPointer:{ type:'shadow' }, backgroundColor:'#102b42', borderWidth:0, textStyle:{ color:'#fff', fontFamily:"'Noto Sans JP', sans-serif" }, formatter:(items) => { const rows = items.map((item) => `${item.marker}${item.seriesName}: <b>${item.value}回</b>`).join('<br>'); return `${items[0].axisValue}<br>${rows}<br><span style='color:#bdd2d9;font-size:11px'>年間・1,300地点当たり</span>`; } }, legend:{ top:0, itemWidth:10, itemHeight:10, textStyle:{ color:'#536c79', fontSize:11, fontFamily:"'IBM Plex Mono', monospace" } }, xAxis:{ type:'category', data:['1時間\n50mm以上','1時間\n80mm以上','1時間\n100mm以上','3時間\n100mm以上','3時間\n150mm以上','3時間\n200mm以上'], axisLine:{ lineStyle:{ color:'#aabfc3' } }, axisTick:{ show:false }, axisLabel:{ color:'#536c79', fontSize:10, lineHeight:15, interval:0 } }, yAxis:{ type:'value', name:'回 / 年', nameTextStyle:{ color:'#536c79', fontSize:10 }, splitLine:{ lineStyle:{ color:'#e4ebea' } }, axisLabel:{ color:'#536c79', fontSize:10 } }, series:[{ name:'1976–1985', type:'bar', data:[226,14,2.2,155,19,2.8], itemStyle:{ color:'#b8c8c8' }, emphasis:{ itemStyle:{ color:'#8ea7aa' } }, barMaxWidth:26 },{ name:'2015–2024', type:'bar', data:[334,24,4,248,33,5.6], itemStyle:{ color:'#f3a84b' }, emphasis:{ itemStyle:{ color:'#d9822e' } }, barMaxWidth:26 }] });
+          const future = echarts.init($('#future-chart'), null, { renderer:'svg' });
+          future.setOption({ animationDuration:650, textStyle:baseText, grid:{ left:10, right:16, top:48, bottom:45, containLabel:true }, tooltip:{ trigger:'axis', axisPointer:{ type:'shadow' }, backgroundColor:'#102b42', borderWidth:0, textStyle:{ color:'#fff', fontFamily:"'Noto Sans JP', sans-serif" }, formatter:(items) => `${items[0].axisValue}<br>${items.map((item) => `${item.marker}${item.seriesName}: <b>${item.value}倍</b>`).join('<br>')}<br><span style='color:#bdd2d9;font-size:11px'>20世紀末比・全国平均</span>` }, legend:{ top:0, itemWidth:10, itemHeight:10, textStyle:{ color:'#536c79', fontSize:11, fontFamily:"'IBM Plex Mono', monospace" } }, xAxis:{ type:'category', data:['1時間 50mm以上','3時間 100mm以上'], axisLine:{ lineStyle:{ color:'#aabfc3' } }, axisTick:{ show:false }, axisLabel:{ color:'#536c79', fontSize:11 } }, yAxis:{ type:'value', min:0, max:3.4, name:'増加倍率', nameTextStyle:{ color:'#536c79', fontSize:10 }, splitLine:{ lineStyle:{ color:'#e4ebea' } }, axisLabel:{ color:'#536c79', fontSize:10, formatter:'{value}倍' } }, series:[{ name:'2°C上昇', type:'bar', data:[1.8,1.8], itemStyle:{ color:'#367fa5' }, label:{ show:true, position:'top', color:'#174f74', fontSize:11, formatter:'{c}倍' }, barMaxWidth:48 },{ name:'4°C上昇', type:'bar', data:[3,3], itemStyle:{ color:'#f3a84b' }, label:{ show:true, position:'top', color:'#9c5b1d', fontSize:11, formatter:'{c}倍' }, barMaxWidth:48 }] });
+          const resizeCharts = () => { observed.resize(); future.resize(); }; window.addEventListener('resize', resizeCharts);
+        }
       })();
     </script>
   </body>
